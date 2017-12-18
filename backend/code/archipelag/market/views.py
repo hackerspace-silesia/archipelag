@@ -14,7 +14,7 @@ from archipelag.message.models import Message
 
 
 class MarketView(LoginRequiredMixin, View):
-    template_name = 'market/list.html'
+    template_name = 'market/market_list.html'
 
     def get(self, request):
         return render(
