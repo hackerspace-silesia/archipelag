@@ -1,5 +1,6 @@
 from json import loads
 
+from django.core.files.storage import FileSystemStorage
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.shortcuts import render
 from django.urls import reverse
@@ -7,10 +8,12 @@ from django.views import View
 from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse
 
+
 from archipelag.market.settings import POINTS_RULES
 from archipelag.market.models import Market
 from archipelag.market.forms import MarketForm
 from archipelag.message.models import Message
+
 
 
 class MarketView(LoginRequiredMixin, View):
@@ -70,3 +73,14 @@ def get_messages(request, market_id):
             {
                 'messages': Message.objects.filter(market=market).all(),
             })
+
+def simple_upload(request):
+    if request.method == 'POST' and request.FILES['myfile']:
+        myfile = request.FILES['myfile']
+        fs = FileSystemStorage()
+        filename = fs.save(myfile.name, myfile)
+        uploaded_file_url = fs.url(filename)
+        return render(request, 'core/simple_upload.html', {
+            'uploaded_file_url': uploaded_file_url
+        })
+    return render(request, 'core/simple_upload.html')
