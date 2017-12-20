@@ -11,7 +11,7 @@ from archipelag.market.settings import POINTS_RULES
 from archipelag.market.models import Market
 from archipelag.market.forms import MarketForm
 from archipelag.message.models import Message
-from archipelag.log.models import Log
+from archipelag.event_log.models import EventLog
 
 
 class MarketView(LoginRequiredMixin, View):
@@ -72,14 +72,14 @@ def get_messages(request, market_id):
             request, template_name,
             {
                 'messages': Message.objects.filter(market=market).all(),
-                'logs': get_logs(messages)
+                'logs_for_share': get_logs_iterator(messages)
             })
 
 
-def get_logs(messages):
+def get_logs_iterator(messages):
     for message in messages:
-        logs = Log.objects.filter(id_connected_object=message.id).all()
-        if logs:
-            for log in logs:
-                date_created = log.date_created.strftime("%Y-%m-%d %H:%M")
-                yield "Użytkownik {} udostępnił na {} dnia {}".format(log.owner, message.type, date_created)
+        logs = EventLog.objects.filter(id_connected_object=message.id).all()
+        if not logs:
+            break
+        for log in logs:
+            yield log.get_share_log()

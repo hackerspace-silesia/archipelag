@@ -5,6 +5,7 @@ from django.db.models import Model
 from django.db.models import PositiveIntegerField
 
 from archipelag.ngo.models import NgoUser
+from archipelag.message.models import Message
 
 SHARE = "SH"
 ADMIN_PROMOTE = "AP"
@@ -18,7 +19,7 @@ EVENT_TYPES = (
 )
 
 
-class Log(Model):
+class EventLog(Model):
     owner = ForeignKey(NgoUser, null=False)
     type = CharField(max_length=2, choices=EVENT_TYPES, default=SHARE, null=False)
     date_created = DateTimeField(auto_now_add=True)
@@ -28,4 +29,6 @@ class Log(Model):
         return "log type {} for id {}".format(self.type, self.id_connected_object)
 
     def get_share_log(self):
-        return "Użytkownik {} udostępnił to wydarzenie {}".format(self.owner.name, self.date_created)
+        date_created = self.date_created.strftime("%Y-%m-%d %H:%M")
+        shared_message = Message.objects.filter(id=self.id_connected_object).first()
+        return "Użytkownik {} udostępnił na {} dnia {}".format(self.owner, shared_message.type, date_created)
