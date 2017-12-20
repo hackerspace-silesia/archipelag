@@ -11,6 +11,7 @@ from archipelag.market.settings import POINTS_RULES
 from archipelag.market.models import Market
 from archipelag.market.forms import MarketForm
 from archipelag.message.models import Message
+from archipelag.event_log.models import EventLog
 
 
 class MarketView(LoginRequiredMixin, View):
@@ -31,7 +32,7 @@ def market_create(request):
 
     body_data = loads(request.body.decode('utf-8'))
     if not is_fields_are_valid(body_data):
-        error = dict(error="Błąd wewnętrzny. Złe pola.")
+        error = dict(error="Błędny url.")
         return JsonResponse(error)
     current_ngo = request.user.ngouser
     if current_ngo.is_user_can_add_market():
@@ -42,7 +43,6 @@ def market_create(request):
     else:
         error = dict(error="Za mało punktów.")
         return JsonResponse(error)
-
 
 
 def is_fields_are_valid(fields):
@@ -63,10 +63,23 @@ def get_new_market(current_ngo, body_data):
 
 
 def get_messages(request, market_id):
+
     market = Market.objects.filter(id=market_id)
+    messages = Message.objects.filter(market=market_id).all()
+
     template_name = 'market/message_list.html'
     return render(
             request, template_name,
             {
                 'messages': Message.objects.filter(market=market).all(),
+                'logs_for_share': get_logs_iterator(messages)
             })
+
+
+def get_logs_iterator(messages):
+    for message in messages:
+        logs = EventLog.objects.filter(id_connected_object=message.id).all()
+        if not logs:
+            break
+        for log in logs:
+            yield log.get_share_log()

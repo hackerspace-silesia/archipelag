@@ -28,12 +28,25 @@
                         {{ msg.type.service}}
                     </td>
                     <td class="col-md-1">
-                        <a data-id={{ msg.id }} type="button" href="{% url 'user_add_point' market_id=msg.market.id %}"  class="modal_button" class="btn">Dodaj punkty</a>
+                        <a data-id={{ msg.id }} type="button" href="{% url 'add_coins_for_share' message_id=msg.id%}"  class="modal_button" class="btn">Dodaj punkty</a>
                     </td>
                 </tr>
 
             {% endfor %}
-        </tbody>
+
+    </table>
+    <table class="jumbotron">
+            </tbody>
+                    <tbody>
+                {% for log in logs_for_share %}
+                    <tr>
+                        <td class="col-md-1">
+                           {{log}}
+                        </td>
+                    </tr>
+
+                {% endfor %}
+            </tbody>
     </table>
     <!-- Modal for vote-->
 {% endblock %}
