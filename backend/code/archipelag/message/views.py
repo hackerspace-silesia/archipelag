@@ -4,8 +4,8 @@ from django.shortcuts import render
 from archipelag.message.forms import MessageForm
 from archipelag.message.models import Message
 from archipelag.market.models import Market
-from archipelag.event.models import Event
-from archipelag.event.models import SHARE
+from archipelag.log.models import Log
+from archipelag.log.models import SHARE
 
 #from archipelag.notification.tasks import send_notification_for_event
 
@@ -43,12 +43,12 @@ def add_coins_if_rules_allow(ngo, market_id):
 def add_coins_for_share(request, message_id):
     message = Message.objects.filter(id=message_id).first()
     current_ngo = request.user.ngouser
-    save_event(message.id, current_ngo)
+    save_log(message.id, current_ngo)
     current_ngo.add_coins(current_ngo, POINTS_RULES['for_share'])
     current_ngo.save()
     return redirect('market_details', market_id=message.market.id)
 
 
-def save_event(msg_id, ngo):
-    event = Event(type=SHARE, id_connected_object=msg_id, owner=ngo)
-    event.save()
+def save_log(msg_id, ngo):
+    log = Log(type=SHARE, id_connected_object=msg_id, owner=ngo)
+    log.save()

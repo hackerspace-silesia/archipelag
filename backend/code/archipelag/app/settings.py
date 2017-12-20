@@ -36,7 +36,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
 
-    'archipelag.event',
+    'archipelag.log',
     'archipelag.ngo',
     'archipelag.market',
     'archipelag.message',
