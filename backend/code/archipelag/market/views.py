@@ -7,6 +7,7 @@ from django.views import View
 from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse
 
+from archipelag.event_log.models import EventLog
 from archipelag.market.settings import POINTS_RULES
 from archipelag.market.models import Market
 from archipelag.market.serializers import MarketSerializer
