@@ -1,16 +1,31 @@
-from django.contrib.auth.decorators import login_required
-from django.shortcuts import redirect
-from django.shortcuts import render
 from archipelag.message.forms import MessageForm
 from archipelag.message.models import Message
+from archipelag.message.serializers import MessageSerializer
 from archipelag.market.models import Market
-from archipelag.event_log.models import EventLog
 from archipelag.event_log.models import SHARE
 
 #from archipelag.notification.tasks import send_notification_for_event
 
+from archipelag.event_log.models import EventLog
 from archipelag.market.settings import POINTS_RULES
 from archipelag.ngo.models import NgoUser
+
+from rest_framework import generics
+from rest_framework.permissions import IsAuthenticated
+
+from django.contrib.auth.decorators import login_required
+from django.shortcuts import redirect
+from django.shortcuts import render
+
+class MessageList(generics.ListAPIView):
+    permission_classes = (IsAuthenticated,)
+    serializer_class = MessageSerializer
+
+    def get_queryset(self):
+        """Get messages for one market."""
+        market_id = self.kwargs['market_id']
+        market = Market.objects.get(id=market_id)
+        return Message.objects.filter(market=market)
 
 
 @login_required

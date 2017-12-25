@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     'archipelag.message',
     'bootstrap3',
     'django_modalview',
+    'rest_framework',
 ]
 
 MIDDLEWARE = [

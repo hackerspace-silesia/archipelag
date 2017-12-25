@@ -7,11 +7,21 @@ from django.views import View
 from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse
 
+from archipelag.event_log.models import EventLog
 from archipelag.market.settings import POINTS_RULES
 from archipelag.market.models import Market
+from archipelag.market.serializers import MarketSerializer
 from archipelag.market.forms import MarketForm
 from archipelag.message.models import Message
-from archipelag.event_log.models import EventLog
+
+from rest_framework import generics
+from rest_framework.permissions import IsAuthenticated
+
+
+class MarketList(generics.ListAPIView):
+    permission_classes = (IsAuthenticated,)
+    serializer_class = MarketSerializer
+    queryset = Market.objects.all()
 
 
 class MarketView(LoginRequiredMixin, View):
@@ -23,7 +33,6 @@ class MarketView(LoginRequiredMixin, View):
             {
                 'user_messages': Market.objects.all(),
             })
-
 
 @login_required
 def market_create(request):
