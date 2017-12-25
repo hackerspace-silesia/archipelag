@@ -3,8 +3,9 @@ from archipelag.event_log.models import EventLog
 
 
 class EventLogSerializer(serializers.ModelSerializer):
-    owner = serializers.ReadOnlyField(source='owner.id')
+    owner_name = serializers.ReadOnlyField(source='owner.name')
+    owner_id = serializers.ReadOnlyField(source='owner.id')
 
     class Meta:
         model = EventLog
-        fields = ('id', 'owner', 'type', 'id_connected_object', 'date_created')
+        fields = ('id', 'owner_name', 'owner_id', 'type', 'id_connected_object', 'date_created')
