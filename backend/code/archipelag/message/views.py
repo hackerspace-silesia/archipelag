@@ -3,6 +3,7 @@ from django.shortcuts import redirect
 from django.shortcuts import render
 from archipelag.message.forms import MessageForm
 from archipelag.message.models import Message
+from archipelag.message.serializers import MessageSerializer
 from archipelag.market.models import Market
 from archipelag.event_log.models import EventLog
 from archipelag.event_log.models import SHARE
@@ -11,6 +12,22 @@ from archipelag.event_log.models import SHARE
 
 from archipelag.market.settings import POINTS_RULES
 from archipelag.ngo.models import NgoUser
+
+from archipelag.event_log.models import EventLog
+from archipelag.event_log.serializers import EventLogSerializer
+from rest_framework import generics
+from rest_framework.permissions import IsAuthenticated
+
+
+class MessageList(generics.ListAPIView):
+    permission_classes = (IsAuthenticated,)
+    serializer_class = MessageSerializer
+
+    def get_queryset(self):
+        """Get messages for one market."""
+        market_id = self.kwargs['market_id']
+        market = Market.objects.get(id=market_id)
+        return Message.objects.filter(market=market)
 
 
 @login_required

@@ -20,10 +20,10 @@ EVENT_TYPES = (
 
 
 class EventLog(Model):
-    owner = ForeignKey(NgoUser, null=False)
-    type = CharField(max_length=2, choices=EVENT_TYPES, default=SHARE, null=False)
+    owner = ForeignKey(NgoUser, null=False, blank=False)
+    type = CharField(max_length=2, choices=EVENT_TYPES, default=SHARE, null=False, blank=False)
     date_created = DateTimeField(auto_now_add=True)
-    id_connected_object = PositiveIntegerField(null=True)
+    id_connected_object = PositiveIntegerField(null=False,)
 
     def __str__(self):
         return "log type {} for id {}".format(self.type, self.id_connected_object)
@@ -32,3 +32,6 @@ class EventLog(Model):
         date_created = self.date_created.strftime("%Y-%m-%d %H:%M")
         shared_message = Message.objects.filter(id=self.id_connected_object).first()
         return "Użytkownik {} udostępnił na {} dnia {}".format(self.owner, shared_message.type, date_created)
+
+    class Meta:
+        ordering = ('date_created',)
