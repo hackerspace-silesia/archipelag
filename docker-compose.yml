@@ -48,5 +48,12 @@ services:
     environment:
         - DJANGO_DEBUG=1
 
+  frontend:
+    build: ./my-project
+    image: frontend
+    ports:
+      - 8080:8080
+    volumes:
+      - ./my-project:/usr/src/app
 volumes:
   postgres-data:

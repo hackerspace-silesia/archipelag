@@ -16,17 +16,23 @@ from rest_framework.permissions import IsAuthenticated
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import redirect
 from django.shortcuts import render
+from rest_framework import viewsets
 
-class MessageList(generics.ListAPIView):
-    permission_classes = (IsAuthenticated,)
+
+class MessagesList(viewsets.ModelViewSet):
+    # permission_classes = (IsAuthenticated,)
     serializer_class = MessageSerializer
 
     def get_queryset(self):
-        """Get messages for one market."""
-        market_id = self.kwargs['market_id']
-        market = Market.objects.get(id=market_id)
-        return Message.objects.filter(market=market)
-
+        """
+        Optionally restricts the returned purchases to a given user,
+        by filtering against a `username` query parameter in the URL.
+        """
+        queryset = Message.objects.all()
+        market_id = self.request.query_params.get('market_id', None)
+        if market_id is not None:
+            queryset = queryset.filter(market=market_id)
+        return queryset
 
 @login_required
 def message_create(request, market_id):

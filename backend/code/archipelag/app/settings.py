@@ -24,7 +24,7 @@ SECRET_KEY = 'q3=#_uwj2(lbo6cp412^#6s@xeux)h^$h&!g&b_1en7hl-%n0p'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.environ.get('DJANGO_DEBUG', '0') == '1'
 
-ALLOWED_HOSTS = ['archipelag.hs-silesia.pl', '127.0.0.1', '0.0.0.0']
+ALLOWED_HOSTS = ['archipelag.hs-silesia.pl', '127.0.0.1', '0.0.0.0', '127.0.0.1:8080']
 
 # Application definition
 
@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     'bootstrap3',
     'django_modalview',
     'rest_framework',
+'corsheaders',
 ]
 
 MIDDLEWARE = [
@@ -53,6 +54,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
 ]
 
 ROOT_URLCONF = 'archipelag.app.urls'
@@ -125,3 +127,7 @@ EMAIL_HOST_PASSWORD = ''
 EMAIL_PORT = 1025
 EMAIL_USE_TLS = False
 NOTIFICATION_FROM_EMAIL = 'notification@example.com'
+
+CORS_ORIGIN_WHITELIST = (
+    '127.0.0.1:8080'
+)

@@ -16,23 +16,25 @@ from archipelag.message.models import Message
 
 from rest_framework import generics
 from rest_framework.permissions import IsAuthenticated
+from rest_framework import viewsets
 
 
-class MarketList(generics.ListAPIView):
-    permission_classes = (IsAuthenticated,)
-    serializer_class = MarketSerializer
+class MarketList(viewsets.ModelViewSet):
     queryset = Market.objects.all()
+    # permission_classes = (IsAuthenticated,)
+    serializer_class = MarketSerializer
 
 
-class MarketView(LoginRequiredMixin, View):
-    template_name = 'market/market_list.html'
 
-    def get(self, request):
-        return render(
-            request, self.template_name,
-            {
-                'user_messages': Market.objects.all(),
-            })
+# class MarketView(LoginRequiredMixin, View):
+#     template_name = 'market/market_list.html'
+#
+#     def get(self, request):
+#         return render(
+#             request, self.template_name,
+#             {
+#                 'user_messages': Market.objects.all(),
+#             })
 
 @login_required
 def market_create(request):
