@@ -44,29 +44,49 @@
     >
 
        <template slot="id" scope="row">
-        <b-button size="sm" @click.stop="row.toggleDetails" v-on:click="get_messages(row.item.id)">
+        <b-button size="sm" @click.stop="row.toggleDetails"
+                  variant="success"
+                  v-if="get_market_messages(row.item.id).length > 0">
           {{ row.detailsShowing ? 'Schowaj' : 'Pokaż' }} udostępnianie
         </b-button>
+         <div v-else>
+        Brak wiadomości
+      </div>
       </template>
       <template slot="row-details" scope="row">
-        <b-card>
-
-        <b-button v-for="item in messages" variant="primary" size="" @click.stop="info(row.item, item.type, $event.target)" class="mr-1">
-          {{ item.type }}
-        </b-button>
-
-        <b-button variant="warning" size="" @click.stop="info(row.item, 'Udostępnienia', $event.target)" class="mr-1">
-          Zobacz kto już udostępnił
-        </b-button>
-        </b-card>
-      </template>
-      <template slot="message-content" scope="row">
-        Nothing
+        <b-card ref="buttons_view">
+            <b-button v-for="message in get_market_messages(row.item.id)"
+                      variant="primary" size=""
+                      @click.stop="info(message, row.item, $event.target)"
+                      class="mr-1">
+              {{ message.type }}
+            </b-button>
+            <b-button variant="warning" size="" @click.stop="logs()" class="mr-1">
+              Zobacz kto już udostępnił
+            </b-button>
+           </b-card>
       </template>
 
     </b-table>
-        <b-modal id="modalInfo" @hide="resetModal" :title="modalInfo.title" ok-only>
-      <pre>{{ modalInfo.content }}</pre>
+    <b-modal id="modalInfo"  @ok="handleOk" @hide="resetModal" :title="modalInfo.title" ok-title="Udostępniono" cancel-title="Anuluj">
+
+              <b-form-textarea id="textarea1"
+                     :value="modalInfo.content">
+
+               </b-form-textarea>
+
+    </b-modal>
+
+        <b-modal id="modalPoints"  @hide="resetModal" ok-only>
+          Naliczono punkty za udostępnienie
+
+    </b-modal>
+
+        </b-modal>
+
+    <b-modal id="modalLogs"  @hide="resetModal" ok-only>
+          Log log
+
     </b-modal>
 
 
@@ -102,21 +122,14 @@ export default {
       sortDesc: false,
       filter: null,
       modalInfo: { title: '', content: '' },
-      messages : {}
+      modalPoints: { title: '', content: '' },
+      modalLogs: { title: '', content: '' },
+      messages : {},
     }
   },
   created(){
-  axios.get("http://127.0.0.1:8000/market/?format=json")
-    .then(response =>{
-    // JSON responses are automatically parsed.
-    this.items= response.data;
-      console.log(this.items);
-    })
-.
-  catch(e => {
-    this.errors.push(e)
-  console.log(e);
-})
+    this.get_market();
+    this.get_all_messages();
 },
   computed: {
     sortOptions () {
@@ -127,10 +140,12 @@ export default {
     }
   },
   methods: {
-    info (item, index, button) {
-      this.modalInfo.title = `Serwis: ${index}`
+    info (message, row, button) {
+      this.modalInfo.title = `Serwis: ${message["type"]}`;
       //JSON.stringify(item, null, 2)
-      this.modalInfo.content = "Wiadomośc do udostępniania"
+      const content = message["content"]+" "+row.hashtag;
+      this.modalInfo.content = content;
+
       this.$root.$emit('bv::show::modal', 'modalInfo', button)
     },
     resetModal () {
@@ -145,20 +160,52 @@ export default {
     getHumanDate : function (date) {
         return moment(date).format('YYYY-MM-DD HH:MM');
     },
-   get_messages: function (id) {
+   get_all_messages: function () {
 
-     axios.get("http://127.0.0.1:8000/message/?format=json&market_id="+id)
+     axios.get("http://127.0.0.1:8000/message/?format=json")
     .then(response =>{
     // JSON responses are automatically parsed.
     this.messages= response.data;
-      console.log(this.messages);
     }).
       catch(e => {
         this.errors.push(e)
       console.log(e);
     })
-    }
+    },
+    get_market:function(){
+          axios.get("http://127.0.0.1:8000/market/?format=json")
+    .then(response =>{
+    // JSON responses are automatically parsed.
+    this.items= response.data;
+    }).catch(e => {
+        this.errors.push(e)
+      console.log(e);
+    })
+    },
+    get_market_messages:function (row_id) {
 
+      const arrayLength = this.messages.length;
+        let market_messages = []
+        for (let i = 0; i < arrayLength; i++) {
+            if (this.messages[i]['market'] == row_id){
+                market_messages.push(this.messages[i]);
+            }
+        }
+      return market_messages;
+    },
+    handleOk () {
+      this.$root.$emit('bv::show::modal', 'modalPoints');
+    },
+    logs(){
+        this.$root.$emit('bv::show::modal', 'modalLogs');
+    },
+    changeColor: function() {
+		if (this.color == 'blue') {
+			this.color = 'red';
+		} else {
+			this.color = 'blue';
+		}
+	}
   }
 }
 </script>
