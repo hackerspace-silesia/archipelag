@@ -13,7 +13,6 @@ testrecipe
 .baelfire.lastlog.*
 test.txt
 *.egg
-build
 dist
 .baelfire.report
 .cache
