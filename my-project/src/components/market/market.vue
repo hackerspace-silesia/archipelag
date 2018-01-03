@@ -79,15 +79,13 @@
     </b-modal>
     <b-modal id="modalLogs" ok-only>
       <div v-for="log in logs">
-          {{log.owner_name }} udostępnił {{getHumanDate(log.date_created)}}
+
+        <b-alert show>  <b-badge> {{log.owner_name }}</b-badge>  udostępnił na {{log.message}} {{getHumanDate(log.date_created)}} </b-alert>
       </div>
     </b-modal>
     <b-modal id="modalPoints" ok-only>
           Naliczono punkty za udostępnienie
     </b-modal>
-
-
-
   </b-container>
     </div>
 </template>
@@ -182,7 +180,7 @@ export default {
     })
     },
     get_logs:function(market_id){
-          axios.get("http://127.0.0.1:8000/event_log/SH/"+market_id+"/?format=json")
+          axios.get("http://127.0.0.1:8000/share_log/"+market_id+"/?format=json")
     .then(response =>{
     // JSON responses are automatically parsed.
       this.logs = response.data;

@@ -30,6 +30,7 @@ urlpatterns = [
     url(r'^market/', include('archipelag.market.urls')),
     url(r'^message/', include('archipelag.message.urls'), ),
     url(r'^event_log/', include('archipelag.event_log.urls'), ),
+    url(r'^share_log/', include('archipelag.share_log.urls'), ),
 ]
 
 if not settings.DEBUG:

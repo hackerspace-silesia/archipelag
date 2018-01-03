@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'archipelag.ngo',
     'archipelag.market',
     'archipelag.message',
+    'archipelag.share_log',
     'bootstrap3',
     'django_modalview',
     'rest_framework',

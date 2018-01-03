@@ -1,12 +1,12 @@
 from rest_framework import serializers
-from archipelag.event_log.models import EventLog
+from archipelag.share_log.models import ShareLog
 
 
-class EventLogSerializer(serializers.ModelSerializer):
+class ShareLogSerializer(serializers.ModelSerializer):
     owner_name = serializers.ReadOnlyField(source='owner.name')
     owner_id = serializers.ReadOnlyField(source='owner.id')
     message = serializers.ReadOnlyField(source='message.type.service')
 
     class Meta:
-        model = EventLog
+        model = ShareLog
         fields = ('id', 'owner_name', 'owner_id', 'message', 'date_created',)
