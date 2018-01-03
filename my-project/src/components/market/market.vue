@@ -61,10 +61,12 @@
                       class="mr-1">
               {{ message.type }}
             </b-button>
-            <b-button variant="warning" size="" @click.stop="logs()" class="mr-1">
+            <b-button variant="warning" size="" @click.stop="show_logs(row.item.id)" class="mr-1">
               Zobacz kto już udostępnił
             </b-button>
            </b-card>
+
+
       </template>
 
     </b-table>
@@ -74,20 +76,16 @@
                      :value="modalInfo.content">
 
                </b-form-textarea>
-
     </b-modal>
-
-        <b-modal id="modalPoints"  @hide="resetModal" ok-only>
+    <b-modal id="modalLogs" ok-only>
+      <div v-for="log in logs">
+          {{log.owner_name }} udostępnił {{getHumanDate(log.date_created)}}
+      </div>
+    </b-modal>
+    <b-modal id="modalPoints" ok-only>
           Naliczono punkty za udostępnienie
-
     </b-modal>
 
-        </b-modal>
-
-    <b-modal id="modalLogs"  @hide="resetModal" ok-only>
-          Log log
-
-    </b-modal>
 
 
   </b-container>
@@ -125,6 +123,7 @@ export default {
       modalPoints: { title: '', content: '' },
       modalLogs: { title: '', content: '' },
       messages : {},
+      logs : {},
     }
   },
   created(){
@@ -182,6 +181,16 @@ export default {
       console.log(e);
     })
     },
+    get_logs:function(market_id){
+          axios.get("http://127.0.0.1:8000/event_log/SH/"+market_id+"/?format=json")
+    .then(response =>{
+    // JSON responses are automatically parsed.
+      this.logs = response.data;
+    }).catch(e => {
+        this.errors.push(e)
+      console.log(e);
+    })
+    },
     get_market_messages:function (row_id) {
 
       const arrayLength = this.messages.length;
@@ -196,16 +205,11 @@ export default {
     handleOk () {
       this.$root.$emit('bv::show::modal', 'modalPoints');
     },
-    logs(){
+    show_logs(market_id){
+      this.get_logs(market_id);
         this.$root.$emit('bv::show::modal', 'modalLogs');
     },
-    changeColor: function() {
-		if (this.color == 'blue') {
-			this.color = 'red';
-		} else {
-			this.color = 'blue';
-		}
-	}
+
   }
 }
 </script>
