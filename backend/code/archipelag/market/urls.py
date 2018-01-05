@@ -1,7 +1,6 @@
 from django.conf.urls import url
 
 from archipelag.market.views import MarketList
-from archipelag.market.views import market_create
 from archipelag.market.views import get_messages
 from rest_framework.routers import DefaultRouter
 router = DefaultRouter()

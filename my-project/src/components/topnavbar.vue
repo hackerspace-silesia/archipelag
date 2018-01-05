@@ -34,7 +34,7 @@ components: {
 methods:{
   logout: function() {
     localStorage.setItem('jwtToken', '');
-    this.$router.push('LogIn');
+    this.$router.push('/login');
  },
 
 }}

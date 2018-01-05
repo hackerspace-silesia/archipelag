@@ -46,14 +46,14 @@
               <div class="form-group">
                 <label>Rozpoczęcie: </label>
 
-                <date-picker v-model="form.startDate" :config="configs.start" ref="startDate"
+                <date-picker v-model="form.date_starting" :config="configs.start" ref="date_starting"
                              @dp-change="onStartChange"> </date-picker>
               </div>
             </div>
             <div class="col-md-12 text-center">
               <div class="form-group">
                 <label>Zakończenie: </label>
-                <date-picker v-model="form.endDate" :config="configs.end" ref="endDate"
+                <date-picker v-model="form.date_ending" :config="configs.end" ref="date_ending"
                              @dp-change="onEndChange" ></date-picker>
               </div>
             </div>
@@ -106,22 +106,22 @@
           title:"",
           description:"",
           hashtag:"",
-          startDate: moment(null),
-          endDate: moment(null),
+          date_starting: moment(null),
+          date_ending: moment(null),
         },
         configs: {
 
           start: {
-            format: 'LLL',
+            format: 'YYYY-MM-DD HH:mm',
             minDate: moment(),
             maxDate: false,
-            locale: 'pl',
+
             sideBySide: true,
           },
           end: {
-            format: 'LLL',
+            format: 'YYYY-MM-DD HH:mm',
             minDate: moment(),
-            locale: 'pl',
+
 
             sideBySide: true,
           }
@@ -136,6 +136,8 @@
 
     submitForm(){
       if (this.form.title.length > 0){
+            this.form.date_starting;
+            this.form.date_ending;
 
             axios.post(`http://127.0.0.1:8000/market/`, {
               body: this.form
