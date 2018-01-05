@@ -9,7 +9,7 @@ from itertools import chain
 
 
 class ShareLogList(views.APIView):
-    # permission_classes = (IsAuthenticated,)
+    permission_classes = (IsAuthenticated,)
 
     def get(self, request, market_id, format=None):
         messages = Message.objects.filter(market=market_id).all()

@@ -11,7 +11,7 @@ class MarketForm(ModelForm):
         exclude = ["owner"]
         fields = [
             'title',
-            'url',
+            'description',
             'date_starting',
             'date_ending',
             'hashtag',
@@ -19,5 +19,5 @@ class MarketForm(ModelForm):
 
     def __init__(self, *args, **kwargs):
         super(MarketForm, self).__init__(*args, **kwargs)
-        self.fields['url'].required = False
+        self.fields['description'].required = False
         self.fields['hashtag'].required = False

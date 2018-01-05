@@ -1,6 +1,7 @@
 <template>
   <div id="app">
-    <topnavbar />
+    <topnavbar v-show="$route.path==='/login' ? false : true"/>
+    {{ready()}}
     <router-view/>
   </div>
 </template>
@@ -11,7 +12,13 @@ export default {
   name: 'app',
   components:{
     topnavbar
-    }
+  },
+
+methods:{
+  ready : function (){
+       console.log(this.$route.path);
+   }
+}
 }
 </script>
 

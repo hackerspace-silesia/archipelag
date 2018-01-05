@@ -21,7 +21,7 @@ from rest_framework import viewsets
 
 class MarketList(viewsets.ModelViewSet):
     queryset = Market.objects.all()
-    # permission_classes = (IsAuthenticated,)
+    permission_classes = (IsAuthenticated,)
     serializer_class = MarketSerializer
 
 

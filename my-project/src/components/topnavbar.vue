@@ -12,13 +12,34 @@
       <b-navbar-nav class="ml-auto">
     <router-link to="/market"><b-button >Targ</b-button></router-link>
     <router-link to="/dodaj_market"> <b-button >Dodaj</b-button></router-link>
-    <router-link to="/wyloguj"> <b-button >Wyloguj</b-button></router-link>
+    <b-button v-on:click="logout" >Wyloguj</b-button>
       </b-navbar-nav>
 
     </b-collapse>
   </b-navbar>
 </div>
 </template>
+
+<script>
+  import axios from 'axios';
+export default {
+
+data() {
+  return {
+}
+},
+components: {
+
+},
+methods:{
+  logout: function() {
+    localStorage.setItem('jwtToken', '');
+    this.$router.push('LogIn');
+ },
+
+}}
+
+</script>
 
 <style scoped>
     button {

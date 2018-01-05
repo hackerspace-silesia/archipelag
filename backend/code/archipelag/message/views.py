@@ -20,7 +20,7 @@ from rest_framework import viewsets
 
 
 class MessagesList(viewsets.ModelViewSet):
-    # permission_classes = (IsAuthenticated,)
+    permission_classes = (IsAuthenticated,)
     serializer_class = MessageSerializer
 
     def get_queryset(self):

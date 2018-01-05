@@ -7,5 +7,5 @@ class MarketSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Market
-        fields = ('id', 'owner', 'title', 'url', 'date_starting',
+        fields = ('id', 'owner', 'title', 'description', 'date_starting',
                   'date_ending', 'date_created', 'date_modified', 'hashtag')

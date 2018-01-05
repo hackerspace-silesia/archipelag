@@ -170,22 +170,30 @@ export default {
     })
     },
     get_market:function(){
+
+          axios.defaults.headers.common['Authorization'] = `JWT ${localStorage.getItem('jwtToken')}`;
           axios.get("http://127.0.0.1:8000/market/?format=json")
     .then(response =>{
     // JSON responses are automatically parsed.
     this.items= response.data;
     }).catch(e => {
-        this.errors.push(e)
+        console.log(e)
       console.log(e);
     })
     },
     get_logs:function(market_id){
-          axios.get("http://127.0.0.1:8000/share_log/"+market_id+"/?format=json")
+      // return axios.get(url, { headers: { Authorization: `Bearer ${getAccessToken()}` }}).then(response => response.data);
+
+      axios.defaults.headers.common['Authorization'] = `JWT ${localStorage.getItem('jwtToken')}`;
+          axios.get("http://127.0.0.1:8000/share_log/"+market_id+"/?format=json", )
+        //   const token = localStorage.getItem('jwtToken')
+        //       axios.get("http://127.0.0.1:8000/share_log/"+market_id+"/?format=json",  { headers: { Authorization: `Bearer`+token }})
+        // .then(response =>{
     .then(response =>{
     // JSON responses are automatically parsed.
       this.logs = response.data;
     }).catch(e => {
-        this.errors.push(e)
+
       console.log(e);
     })
     },

@@ -31,6 +31,7 @@ urlpatterns = [
     url(r'^message/', include('archipelag.message.urls'), ),
     url(r'^event_log/', include('archipelag.event_log.urls'), ),
     url(r'^share_log/', include('archipelag.share_log.urls'), ),
+    url(r'^ngo/', include('archipelag.ngo.urls'), ),
 ]
 
 if not settings.DEBUG:

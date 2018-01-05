@@ -6,9 +6,11 @@ import router from './router'
 import BootstrapVue from 'bootstrap-vue'
 import 'bootstrap/dist/css/bootstrap.css'
 import 'bootstrap-vue/dist/bootstrap-vue.css'
+import VueFormGenerator from "vue-form-generator";
+
 
 Vue.use(BootstrapVue)
-
+Vue.use(VueFormGenerator);
 
 Vue.config.productionTip = false;
 
@@ -19,5 +21,6 @@ new Vue({
   template: '<App/>',
   components: {
     App,
+    router
    }
 })
