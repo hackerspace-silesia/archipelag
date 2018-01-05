@@ -104,7 +104,7 @@ export default {
       fields: [
         { key: 'owner', label: 'Organizacja', sortable: true, 'class': 'text-center' },
         { key: 'title', label: 'tytuł' , sortable: true,},
-        { key: 'url', label: 'url',sortable: true, },
+        { key: 'description', label: 'opis',sortable: true, },
         { key: 'date_starting', label: "Rozpoczęcie" , sortable: true, formatter: 'getHumanDate'},
         { key: 'date_ending', label: 'Zakończenie', sortable: true, formatter: 'getHumanDate'},
         { key: 'hashtag', label: 'hashtag', sortable: true, },
@@ -155,6 +155,9 @@ export default {
       this.currentPage = 1
     },
     getHumanDate : function (date) {
+      if (date == null){
+        return '--';
+      }
         return moment(date).format('YYYY-MM-DD HH:MM');
     },
    get_all_messages: function () {
