@@ -47,7 +47,9 @@ router.beforeEach((to, from, next) => {
 
     axios.post("http://127.0.0.1:8000/ngo/token-verify/", {token:localStorage.getItem('jwtToken')})
     .then(response =>{
-    // JSON responses are automatically parsed.
+      const user_data = response.data.user;
+      localStorage.setItem('coins', user_data.coins);
+      localStorage.setItem('ngo_name', user_data.name);
       next()
     }).catch(e => {
       next({

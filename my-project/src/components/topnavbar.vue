@@ -4,7 +4,7 @@
 
     <b-navbar-toggle target="nav_collapse"></b-navbar-toggle>
 
-    <b-navbar-brand href="#">masz 0 punktów</b-navbar-brand>
+    <b-navbar-brand href="#">{{name}} masz {{coins}} punktów</b-navbar-brand>
 
     <b-collapse is-nav id="nav_collapse">
 
@@ -23,10 +23,22 @@
 <script>
   import axios from 'axios';
 export default {
+created(){
 
+  this.getNgoName();
+  this.getCoins();
+  console.log(this.coins)
+},
 data() {
   return {
+    coins:0,
+    name:'',
 }
+},
+watch:{
+    '$route' (to, from){
+        this.getCoins();
+    }
 },
 components: {
 
@@ -35,6 +47,13 @@ methods:{
   logout: function() {
     localStorage.setItem('jwtToken', '');
     this.$router.push('/login');
+ },
+ getNgoName: function(){
+   this.name = localStorage.getItem('ngo_name');
+ },
+ getCoins: function(){
+   console.log(this.coins)
+   this.coins = localStorage.getItem('coins');
  },
 
 }}

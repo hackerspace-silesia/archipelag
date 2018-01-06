@@ -65,8 +65,9 @@
 
           axios.post("http://127.0.0.1:8000/ngo/login/",this.form)
          .then(response =>{
+           console.log(response)
             localStorage.setItem('jwtToken', response.data.token);
-            this.$router.push('/')
+            this.$router.push('/');
          }).
            catch(e => {
              this.showDismissibleAlert=true
