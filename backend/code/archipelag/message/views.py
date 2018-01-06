@@ -65,17 +65,3 @@ def add_coins_if_rules_allow(ngo, market_id):
         coins_to_add = POINTS_RULES['create_more_than_three_messages_format']
         ngo_model = NgoUser()
         ngo_model.add_coins(ngo, coins_to_add)
-
-
-def add_coins_for_share(request, message_id):
-    message = Message.objects.filter(id=message_id).first()
-    current_ngo = request.user.ngouser
-    save_log(message.id, current_ngo)
-    current_ngo.add_coins(current_ngo, POINTS_RULES['for_share'])
-    current_ngo.save()
-    return redirect('market_details', market_id=message.market.id)
-
-
-def save_log(msg_id, ngo):
-    log = EventLog(type=SHARE, id_connected_object=msg_id, owner=ngo)
-    log.save()
