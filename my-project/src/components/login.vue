@@ -30,7 +30,7 @@
 
         </b-form-group>
         <div class="form-group">
-          <button class="btn btn-primary" type="submit"><i class="glyphicon glyphicon-ok"></i> Zapisz </button>
+          <button class="btn btn-primary" type="submit"><i class="glyphicon glyphicon-ok"></i> Zaloguj </button>
         </div>
       </b-card>
     </form>

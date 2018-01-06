@@ -1,6 +1,12 @@
 <template>
   <section class="container">
-
+    <b-alert variant="danger"
+       dismissible
+       :show="showDismissibleAlertError"
+       @dismissed="showDismissibleAlertError=false"
+       >
+    {{error}}
+    </b-alert>
 
     <div class="row">
       <div class="col-md-3 center" >
@@ -98,6 +104,8 @@
       },
     data() {
       return {
+        showDismissibleAlertError:false,
+        error:"",
         formSubmitted:false,
         form: {
           owner:1,
@@ -108,7 +116,6 @@
           date_ending: moment(null),
         },
         configs: {
-
           start: {
             format: 'YYYY-MM-DD HH:mm',
             minDate: moment(),
@@ -138,6 +145,15 @@
               body: this.form
             })
             .then(response => {
+              if ('error' in response['data']){
+                this.showDismissibleAlertError = true;
+                this.error = response['data']['error']
+              }
+              else{
+                const market_id = response['data']['success']['market_id'];
+                this.$router.push('/dodaj_wiadomosc/'+market_id);
+              }
+
               console.log(response)
             })
             .catch(e => {

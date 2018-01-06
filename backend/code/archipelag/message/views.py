@@ -46,7 +46,7 @@ class MessagesList(viewsets.ModelViewSet):
             print(ex)
             return Response(dict(error="Błąd z bazą danych. Skontaktuj się z administratorem."))
         add_coins_if_rules_allow(request.user.ngouser, data['market'])
-        return Response(dict(error="Dodano wiadomość"))
+        return Response(dict(success="Dodano wiadomość"))
 
 
 class MessagesTypesList(viewsets.ReadOnlyModelViewSet):

@@ -1,4 +1,3 @@
-
 from archipelag.ngo.serializers import NgoUserSerializer
 from archipelag.ngo.models import NgoUser
 
