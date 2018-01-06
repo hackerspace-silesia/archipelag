@@ -1,6 +1,7 @@
-from archipelag.message.forms import MessageForm
 from archipelag.message.models import Message
+from archipelag.message.models import MessageType
 from archipelag.message.serializers import MessageSerializer
+from archipelag.message.serializers import MessageTypesSerializer
 from archipelag.market.models import Market
 from archipelag.event_log.models import SHARE
 
@@ -10,13 +11,10 @@ from archipelag.event_log.models import EventLog
 from archipelag.market.settings import POINTS_RULES
 from archipelag.ngo.models import NgoUser
 
-from rest_framework import generics
 from rest_framework.permissions import IsAuthenticated
-
-from django.contrib.auth.decorators import login_required
 from django.shortcuts import redirect
-from django.shortcuts import render
 from rest_framework import viewsets
+from rest_framework.response import Response
 
 
 class MessagesList(viewsets.ModelViewSet):
@@ -34,34 +32,32 @@ class MessagesList(viewsets.ModelViewSet):
             queryset = queryset.filter(market=market_id)
         return queryset
 
-@login_required
-def message_create(request, market_id):
-    if request.method != 'POST':
-        form = MessageForm()
-        return render(request, 'registration/message.html', {'form': form})
-    form = MessageForm(request.POST)
-    if not form.is_valid():
-        return
-    msg_market = create_new_message_row(form, market_id)
-    add_coins_if_rules_allow(request.user.ngouser, market_id)
-    #send_notification_for_event.delay(event.id)
-    statement = get_statement_for_user(msg_market)
-    form = MessageForm()
-    return render(request, 'registration/message.html', {'form': form, 'message': statement})
+    def create(self, request):
+        data = request.data['body']
+        try:
+            market = Market.objects.get(id=data['market'])
+            message_type = MessageType.objects.get(id=data['type'])
+        except Exception as ex:
+            print(ex)
+            return Response(dict(error='Problem z integralnością danych. Skontaktuj się z administratorem.'))
+        try:
+            Message.objects.create(market=market, type=message_type, content=data['content'])
+        except Exception as ex:
+            print(ex)
+            return Response(dict(error="Błąd z bazą danych. Skontaktuj się z administratorem."))
+        add_coins_if_rules_allow(request.user.ngouser, data['market'])
+        return Response(dict(error="Dodano wiadomość"))
+
+
+class MessagesTypesList(viewsets.ReadOnlyModelViewSet):
+    permission_classes = (IsAuthenticated,)
+    serializer_class = MessageTypesSerializer
+    queryset = MessageType.objects.all()
 
 
 def get_statement_for_user(msg_market):
     service_name = msg_market.type.service
     return "Twoja wiadomość na {} została dodana, dodaj wiadomości na inne platformy".format(service_name)
-
-
-def create_new_message_row(form, market_id):
-    msg_market = form.save(commit=False)
-    market = Market.objects.get(id=market_id)
-    msg_market.market = market
-    msg_market.save()
-    return msg_market
-
 
 def add_coins_if_rules_allow(ngo, market_id):
     messages = Message.objects.filter(market_id=market_id).count()

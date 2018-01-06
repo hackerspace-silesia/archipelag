@@ -1,9 +1,10 @@
 import Vue from 'vue'
 import Router from 'vue-router'
 import Market from '@/components/market/market'
+import AddMessages from '@/components/add_messages'
 import AddMarket from '@/components/add_market'
 import LogIn from '@/components/login'
-import Auth from '@/services/auth'
+
 import axios from 'axios';
 Vue.use(Router)
 
@@ -31,6 +32,12 @@ const router = new Router({
             path: '/login',
             name: 'LogIn',
             component: LogIn
+        },
+        {
+            path: '/dodaj_wiadomosc/:market_id',
+            name: 'AddMessages',
+            component: AddMessages,
+            meta: { requiresAuth: true }
         },
     ]
 })

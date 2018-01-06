@@ -21,7 +21,6 @@
                   id="title"
                   type="text"
                   :state="state"
-
                   v-model="form.title">
                 </b-form-input>
               </b-form-group>
@@ -58,7 +57,6 @@
               </div>
             </div>
           </div>
-
           <hr>
 
           <div class="form-group">
@@ -115,14 +113,11 @@
             format: 'YYYY-MM-DD HH:mm',
             minDate: moment(),
             maxDate: false,
-
             sideBySide: true,
           },
           end: {
             format: 'YYYY-MM-DD HH:mm',
             minDate: moment(),
-
-
             sideBySide: true,
           }
         },
@@ -138,7 +133,7 @@
       if (this.form.title.length > 0){
             this.form.date_starting;
             this.form.date_ending;
-
+             axios.defaults.headers.common['Authorization'] = `JWT ${localStorage.getItem('jwtToken')}`;
             axios.post(`http://127.0.0.1:8000/market/`, {
               body: this.form
             })
@@ -149,7 +144,7 @@
               console.log(e)
             })
           }
-          },
+      },
 
       onStartChange(e) {
         console.log('onStartChange', e.date);

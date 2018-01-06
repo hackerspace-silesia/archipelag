@@ -1,5 +1,6 @@
 from rest_framework import serializers
 from archipelag.message.models import Message
+from archipelag.message.models import MessageType
 
 
 class MessageSerializer(serializers.ModelSerializer):
@@ -9,3 +10,9 @@ class MessageSerializer(serializers.ModelSerializer):
     class Meta:
         model = Message
         fields = ('content', 'shared', 'market', 'type')
+
+
+class MessageTypesSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = MessageType
+        fields = ('id', 'service', 'count_hashtag', 'char_restriction')

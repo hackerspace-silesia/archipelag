@@ -161,7 +161,7 @@ export default {
         return moment(date).format('YYYY-MM-DD HH:MM');
     },
    get_all_messages: function () {
-
+     axios.defaults.headers.common['Authorization'] = `JWT ${localStorage.getItem('jwtToken')}`;
      axios.get("http://127.0.0.1:8000/message/?format=json")
     .then(response =>{
     // JSON responses are automatically parsed.
