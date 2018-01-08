@@ -28,8 +28,12 @@
                              state="invalid"
                              :ref="service.id"
                              placeholder="Wpisz wiadomość"
-                             :rows="3"></textarea>
-            <button class="btn btn-primary" @click.prevent="getFormValues(service.id)"><i class="glyphicon glyphicon-ok"></i> Zapisz </button>
+                             :rows="3"
+                             :maxlength="service.char_restriction"
+                             required></textarea>
+                             <p class='text-right text-small'>{{service.char_restriction}}</p>
+            <button class="btn btn-primary" type="submit" @click.prevent="getFormValues(service.id)"><i class="glyphicon glyphicon-ok"></i> Zapisz </button>
+
 </b-form-group>
         </form>
 
@@ -67,9 +71,6 @@
       axios
     },
     methods: {
-      submitForm(){
-
-      },
       getFormValues(type_id){
         const form={
           content:this.$refs[type_id][0].value,
