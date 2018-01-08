@@ -157,7 +157,7 @@ export default {
       this.currentPage = 1
     },
     getHumanDate : function (date) {
-      console.log(date);
+
       if (date == null){
         return '--';
       }
@@ -169,7 +169,6 @@ export default {
     .then(response =>{
     // JSON responses are automatically parsed.
     this.messages= response.data;
-    console.log(this.messages)
     }).
       catch(e => {
         this.errors.push(e)

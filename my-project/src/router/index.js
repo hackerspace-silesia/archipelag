@@ -4,6 +4,7 @@ import Market from '@/components/market/market'
 import AddMessages from '@/components/add_messages'
 import AddMarket from '@/components/add_market'
 import LogIn from '@/components/login'
+import NotFound from '@/components/notFound'
 
 import axios from 'axios';
 Vue.use(Router)
@@ -39,6 +40,11 @@ const router = new Router({
             component: AddMessages,
             meta: { requiresAuth: true }
         },
+        {
+          path:'*',
+          name:'NotFound',
+          component:NotFound,
+        }
     ]
 })
 
