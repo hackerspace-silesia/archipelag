@@ -27,7 +27,6 @@ created(){
 
   this.getNgoName();
   this.getCoins();
-  console.log(this.coins)
 },
 data() {
   return {
@@ -52,7 +51,6 @@ methods:{
    this.name = localStorage.getItem('ngo_name');
  },
  getCoins: function(){
-   console.log(this.coins)
    this.coins = localStorage.getItem('coins');
  },
 

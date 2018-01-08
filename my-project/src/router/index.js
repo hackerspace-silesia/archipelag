@@ -45,7 +45,7 @@ const router = new Router({
 router.beforeEach((to, from, next) => {
   if (to.matched.some(record => record.meta.requiresAuth)) {
 
-    axios.post("http://127.0.0.1:8000/ngo/token-verify/", {token:localStorage.getItem('jwtToken')})
+    axios.post(process.env.BACKEND+"ngo/token-verify/", {token:localStorage.getItem('jwtToken')})
     .then(response =>{
       const user_data = response.data.user;
       localStorage.setItem('coins', user_data.coins);

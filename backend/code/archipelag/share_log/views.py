@@ -1,4 +1,4 @@
-from rest_framework import views
+from rest_framework import viewsets
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from itertools import chain
@@ -9,33 +9,34 @@ from archipelag.market.settings import POINTS_RULES
 from archipelag.message.models import Message
 
 
-
-
-class ShareLogList(views.APIView):
+class ShareLogList(viewsets.ViewSet):
     permission_classes = (IsAuthenticated,)
 
-    def get(self, request, market_id, format=None):
+    def get_list(self, request, market_id, *args, **kwargs):
+        # market_id = self.kwargs['market_id']
         messages = Message.objects.filter(market=market_id).all()
         logs = []
+        print(messages)
         for message in messages:
             logs.append(ShareLog.objects.filter(message=message.id))
         serializer = ShareLogSerializer(list(chain(*logs)), many=True)
+        print(serializer.data)
         return Response(serializer.data)
 
-    def create(self, request):
+    def create(self, request, market_id=None):
+        """To crete information about who and when share message."""
         current_ngo = request.user.ngouser
-        print(request.market_id)
-        print(request)
+        message_id = market_id
+        add_coins_for_share(current_ngo, message_id)
         return Response(dict(success="Dodano wiadomość"))
 
-def add_coins_for_share(request, message_id):
+def add_coins_for_share(current_ngo , message_id):
     message = Message.objects.filter(id=message_id).first()
-    current_ngo = request.user.ngouser
-    save_log(message.id, current_ngo)
+    save_log(message, current_ngo)
     current_ngo.add_coins(current_ngo, POINTS_RULES['for_share'])
     current_ngo.save()
 
 
-def save_log(msg_id, ngo):
-    log = ShareLog(message=msg_id, owner=ngo)
+def save_log(msg, ngo):
+    log = ShareLog(message=msg, owner=ngo)
     log.save()

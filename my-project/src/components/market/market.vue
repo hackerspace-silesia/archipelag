@@ -57,16 +57,16 @@
         <b-card ref="buttons_view">
             <b-button v-for="message in get_market_messages(row.item.id)"
                       variant="primary" size=""
-                      @click.stop="info(message, row.item, $event.target)"
+                      @click.stop="openInfoModal(message, row.item, $event.target)"
                       class="mr-1">
               {{ message.type }}
             </b-button>
-            <b-button variant="warning" size="" @click.stop="show_logs(row.item.id)" class="mr-1">
+            <b-button variant="warning" size="" @click.stop="showLogs(row.item.id)" class="mr-1">
               Zobacz kto już udostępnił
             </b-button>
            </b-card>
 
-           <b-modal id="modalInfo"  @ok="handleOk(row.item.id)" @hide="resetModal" :title="modalInfo.title" ok-title="Udostępniono" cancel-title="Anuluj">
+           <b-modal id="modalInfo"  @ok="handleSharedMessage" @hide="resetModal" :title="modalInfo.title" ok-title="Nalicz punkty za udostępnienie" cancel-title="Anuluj">
 
                      <b-form-textarea id="textarea1"
                             :value="modalInfo.content">
@@ -79,7 +79,6 @@
 
     <b-modal id="modalLogs" ok-only>
       <div v-for="log in logs">
-
         <b-alert show>  <b-badge> {{log.owner_name }}</b-badge>  udostępnił na {{log.message}} {{getHumanDate(log.date_created)}} </b-alert>
       </div>
     </b-modal>
@@ -122,9 +121,11 @@ export default {
       modalLogs: { title: '', content: '' },
       messages : {},
       logs : {},
+      actualSharedMessageId : '',
     }
   },
   created(){
+
     this.get_market();
     this.get_all_messages();
 },
@@ -137,13 +138,15 @@ export default {
     }
   },
   methods: {
-    info (message, row, button) {
+    openInfoModal (message, row, button) {
       this.modalInfo.title = `Serwis: ${message["type"]}`;
       const content = message["content"]+" "+row.hashtag;
       this.modalInfo.content = content;
-
-      this.$root.$emit('bv::show::modal', 'modalInfo', button, message['id'])
+      this.actualSharedMessageId = message.id
+      console.log(this.actualSharedMessageId)
+      this.$root.$emit('bv::show::modal', 'modalInfo', button)
     },
+
     resetModal () {
       this.modalInfo.title = ''
       this.modalInfo.content = ''
@@ -154,14 +157,15 @@ export default {
       this.currentPage = 1
     },
     getHumanDate : function (date) {
+      console.log(date);
       if (date == null){
         return '--';
       }
-        return moment(date).format('YYYY-MM-DD HH:MM');
+        return moment(date).format('YYYY-MM-DD HH:mm');
     },
    get_all_messages: function () {
      axios.defaults.headers.common['Authorization'] = `JWT ${localStorage.getItem('jwtToken')}`;
-     axios.get("http://127.0.0.1:8000/message/?format=json")
+     axios.get(process.env.BACKEND+"message/?format=json")
     .then(response =>{
     // JSON responses are automatically parsed.
     this.messages= response.data;
@@ -175,7 +179,7 @@ export default {
     get_market:function(){
 
           axios.defaults.headers.common['Authorization'] = `JWT ${localStorage.getItem('jwtToken')}`;
-          axios.get("http://127.0.0.1:8000/market/?format=json")
+          axios.get(process.env.BACKEND+"market/?format=json")
     .then(response =>{
     // JSON responses are automatically parsed.
     this.items= response.data;
@@ -186,7 +190,7 @@ export default {
     },
     get_logs:function(market_id){
       axios.defaults.headers.common['Authorization'] = `JWT ${localStorage.getItem('jwtToken')}`;
-          axios.get("http://127.0.0.1:8000/share_log/"+market_id+"/?format=json")
+          axios.get(process.env.BACKEND+"share_log/"+market_id+"/?format=json")
         .then(response =>{
     // JSON responses are automatically parsed.
       this.logs = response.data;
@@ -206,13 +210,25 @@ export default {
         }
       return market_messages;
     },
-    handleOk (market_id) {
-      console.log(market_id)
+    handleSharedMessage () {
+      this.sendShareEvent(this.actualSharedMessageId);
+
       this.$root.$emit('bv::show::modal', 'modalPoints');
     },
-    show_logs(market_id){
+    showLogs(market_id){
       this.get_logs(market_id);
-        this.$root.$emit('bv::show::modal', 'modalLogs');
+      this.$root.$emit('bv::show::modal', 'modalLogs');
+    },
+    sendShareEvent:function(message_id){
+      axios.defaults.headers.common['Authorization'] = `JWT ${localStorage.getItem('jwtToken')}`;
+          axios.post(process.env.BACKEND+"share_log/"+message_id+"/")
+        .then(response =>{
+    // JSON responses are automatically parsed.
+      this.logs = response.data;
+    }).catch(e => {
+
+      console.log(e);
+    })
     },
 
   }

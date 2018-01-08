@@ -141,7 +141,7 @@
             this.form.date_starting;
             this.form.date_ending;
              axios.defaults.headers.common['Authorization'] = `JWT ${localStorage.getItem('jwtToken')}`;
-            axios.post(`http://127.0.0.1:8000/market/`, {
+            axios.post(process.env.BACKEND+`market/`, {
               body: this.form
             })
             .then(response => {
@@ -154,7 +154,6 @@
                 this.$router.push('/dodaj_wiadomosc/'+market_id);
               }
 
-              console.log(response)
             })
             .catch(e => {
               console.log(e)

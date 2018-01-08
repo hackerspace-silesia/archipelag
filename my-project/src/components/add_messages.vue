@@ -45,7 +45,7 @@
     name:'AddMessages',
     created(){
        axios.defaults.headers.common['Authorization'] = `JWT ${localStorage.getItem('jwtToken')}`;
-      axios.get(`http://127.0.0.1:8000/messages_types/`)
+      axios.get(process.env.BACKEND+`messages_types/`)
       .then(response => {
         this.types = response.data;
       })
@@ -77,7 +77,7 @@
           market:this.$route.params.market_id,
         };
         axios.defaults.headers.common['Authorization'] = `JWT ${localStorage.getItem('jwtToken')}`;
-              axios.post(`http://127.0.0.1:8000/message/`, {
+              axios.post(process.env.BACKEND+`message/`, {
                 body: form
               })
               .then(response => {
