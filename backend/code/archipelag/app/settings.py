@@ -25,7 +25,7 @@ SECRET_KEY = 'q3=#_uwj2(lbo6cp412^#6s@xeux)h^$h&!g&b_1en7hl-%n0p'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.environ.get('DJANGO_DEBUG', '0') == '1'
 
-ALLOWED_HOSTS = ['archipelag.hs-silesia.pl', '127.0.0.1', '0.0.0.0', '127.0.0.1:8080', '192.168.0.250:8080']
+ALLOWED_HOSTS = ['api-archipelag.hs-silesia.pl', 'archipelag.hs-silesia.pl', '127.0.0.1', '0.0.0.0', '127.0.0.1:8080', '192.168.0.250:8080']
 
 # Application definition
 
@@ -113,8 +113,8 @@ STATICFILES_DIRS = (
     os.path.join(BASE_DIR, "static"),
 )
 
-STATIC_URL = '/static/'
-STATIC_ROOT = '/static-files/'
+STATIC_URL = os.environ.get('DJANGO_STATIC_FILES', '/static/')
+STATIC_ROOT = '/django-static/'
 LOGIN_REDIRECT_URL = '/market/'
 LOGOUT_REDIRECT_URL = '/'
 BROKER_URL = os.environ.get(
@@ -130,7 +130,9 @@ EMAIL_USE_TLS = False
 NOTIFICATION_FROM_EMAIL = 'notification@example.com'
 
 CORS_ORIGIN_WHITELIST = (
-    '127.0.0.1:8080', '192.168.0.250:8080'
+    '127.0.0.1:8080',
+    '192.168.0.250:8080',
+    'archipelag.hs-silesia.pl'
 )
 
 # Rest Framework permissions and authentication middleware

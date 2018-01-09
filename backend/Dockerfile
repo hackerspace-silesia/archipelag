@@ -16,10 +16,8 @@ RUN python setup.py develop
 WORKDIR /code/archipelag
 
 # collect static
-RUN mkdir /static-files
-RUN python manage.py collectstatic --noinput
+
 
 CMD bash migrate-and-run.sh
 
 EXPOSE 8000
-

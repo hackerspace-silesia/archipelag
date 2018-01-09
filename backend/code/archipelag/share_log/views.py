@@ -16,7 +16,6 @@ class ShareLogList(viewsets.ViewSet):
         # market_id = self.kwargs['market_id']
         messages = Message.objects.filter(market=market_id).all()
         logs = []
-        print(messages)
         for message in messages:
             logs.append(ShareLog.objects.filter(message=message.id))
         serializer = ShareLogSerializer(list(chain(*logs)), many=True)
@@ -30,13 +29,17 @@ class ShareLogList(viewsets.ViewSet):
         add_coins_for_share(current_ngo, message_id)
         return Response(dict(success="Dodano wiadomość"))
 
+
 def add_coins_for_share(current_ngo , message_id):
     message = Message.objects.filter(id=message_id).first()
     save_log(message, current_ngo)
-    current_ngo.add_coins(current_ngo, POINTS_RULES['for_share'])
-    current_ngo.save()
+    if ShareLog.objects.filter(message=message, owner=current_ngo).count() > 3:
+        current_ngo.add_coins(POINTS_RULES['share_more_than_three_messages_format'])
+    else:
+        current_ngo.add_coins(POINTS_RULES['for_share'])
 
 
 def save_log(msg, ngo):
     log = ShareLog(message=msg, owner=ngo)
     log.save()
+    return log

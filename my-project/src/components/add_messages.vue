@@ -31,7 +31,7 @@
                              :rows="3"
                              :maxlength="service.char_restriction"
                              required></textarea>
-                             <p class='text-right text-small'>{{service.char_restriction}}</p>
+                             <p class='text-right text-small'>max liczba znaków {{service.char_restriction}}</p>
             <button class="btn btn-primary" type="submit" @click.prevent="getFormValues(service.id)"><i class="glyphicon glyphicon-ok"></i> Zapisz </button>
 
 </b-form-group>
