@@ -44,14 +44,16 @@
     >
     <template slot="description" scope="row">
      <b-button size="lg"
-               variant="success"
-               v-b-toggle="row.index.toString()"
-               >Zobacz szczegóły
+              v-if="isDescription(row.item.description)"
+               variant="success"  v-b-modal="row.index.toString()">
+               Zobacz szczegóły
      </b-button>
-     <b-collapse v-bind:id="row.index.toString()"  class="mt-2 description">
-        <b-card>{{row.item.description}}</b-card>
-
-      </b-collapse>
+     <div v-else>
+       Brak szczegółów
+     </div>
+        <b-modal v-bind:id="row.index.toString()" ok-only>
+              {{row.item.description}}
+        </b-modal>
    </template>
        <template slot="id" scope="row">
         <b-button size="lg" @click.stop="row.toggleDetails"
@@ -257,6 +259,16 @@ export default {
       console.log(e);
     })
     },
+    isDescription(msg){
+      if (msg.length> 0)
+      {
+        return true;
+      }
+        else{
+          return false;
+        }
+
+    }
 
   }
 }
