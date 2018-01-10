@@ -42,9 +42,19 @@
              :sort-desc.sync="sortDesc"
              @filtered="onFiltered"
     >
+    <template slot="description" scope="row">
+     <b-button size="lg"
+               variant="success"
+               v-b-toggle="row.index.toString()"
+               >Zobacz szczegóły
+     </b-button>
+     <b-collapse v-bind:id="row.index.toString()"  class="mt-2 description">
+        <b-card>{{row.item.description}}</b-card>
 
+      </b-collapse>
+   </template>
        <template slot="id" scope="row">
-        <b-button size="sm" @click.stop="row.toggleDetails"
+        <b-button size="lg" @click.stop="row.toggleDetails"
                   variant="success"
                   v-if="get_market_messages(row.item.id).length > 0">
           {{ row.detailsShowing ? 'Schowaj' : 'Pokaż' }} udostępnianie
@@ -108,7 +118,7 @@ export default {
       fields: [
         { key: 'owner', label: 'Organizacja', sortable: true, 'class': 'text-center' },
         { key: 'title', label: 'tytuł' , sortable: true,},
-        { key: 'description', label: 'opis',sortable: true, },
+        { key: 'description', label: 'opis',},
         { key: 'date_starting', label: "Rozpoczęcie" , sortable: true, formatter: 'getHumanDate'},
         { key: 'date_ending', label: 'Zakończenie', sortable: true, formatter: 'getHumanDate'},
         { key: 'hashtag', label: 'hashtag', sortable: true, },
@@ -252,4 +262,9 @@ export default {
 }
 </script>
 
+<style>
+.description{
+    left: 0px;
+}
+</style>
 <!-- table-complete-1.vue -->

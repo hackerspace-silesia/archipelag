@@ -140,27 +140,30 @@
     submitForm(){
       if (this.form.title.length > 0){
             this.isLoading = true
-             axios.defaults.headers.common['Authorization'] = `JWT ${localStorage.getItem('jwtToken')}`;
+            axios.defaults.headers.common['Authorization'] = `JWT ${localStorage.getItem('jwtToken')}`;
             axios.post(process.env.BACKEND+`market/`, {
               body: this.form
             })
             .then(response => {
               this.isLoading = false;
-              if ('error' in response['data']){
-                this.showDismissibleAlertError = true;
-                this.error = response['data']['error']
-              }
-              else{
-                const market_id = response['data']['success']['market_id'];
-                this.$router.push('/dodaj_wiadomosc/'+market_id);
-              }
-
+              this.redirectOrReturnError(response['data']);
             })
             .catch(e => {
               this.isLoading = false;
+              this.error = "Błąd po stronie serwera. Skontaktuj się z administratorem."
               console.log(e)
             })
           }
+      },
+      redirectOrReturnError(response){
+        if ('error' in response){
+          this.showDismissibleAlertError = true;
+          this.error = response['error']
+        }
+        else{
+          const market_id = response['success']['market_id'];
+          this.$router.push('/dodaj_wiadomosc/'+market_id);
+        }
       },
 
       onStartChange(e) {
