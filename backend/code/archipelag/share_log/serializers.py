@@ -9,4 +9,4 @@ class ShareLogSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = ShareLog
-        fields = ('id', 'owner_name', 'owner_id', 'message', 'date_created',)
+        fields = ('id', 'owner_name', 'owner_id', 'message', 'date_created', 'coins')

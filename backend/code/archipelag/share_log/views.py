@@ -19,27 +19,34 @@ class ShareLogList(viewsets.ViewSet):
         for message in messages:
             logs.append(ShareLog.objects.filter(message=message.id))
         serializer = ShareLogSerializer(list(chain(*logs)), many=True)
-        print(serializer.data)
         return Response(serializer.data)
 
     def create(self, request, market_id=None):
         """To crete information about who and when share message."""
         current_ngo = request.user.ngouser
         message_id = market_id
-        add_coins_for_share(current_ngo, message_id)
-        return Response(dict(success="Dodano wiadomość"))
+        response = add_coins_for_share(current_ngo, message_id)
+        return Response(response)
 
 
 def add_coins_for_share(current_ngo , message_id):
-    message = Message.objects.filter(id=message_id).first()
-    save_log(message, current_ngo)
-    if ShareLog.objects.filter(message=message, owner=current_ngo).count() > 3:
-        current_ngo.add_coins(POINTS_RULES['share_more_than_three_messages_format'])
+    shared_message = Message.objects.filter(id=message_id).first()
+    if ShareLog.objects.filter(message=shared_message).first():
+        return dict(error="Wiadomość juz udostępniono wcześniej.")
+    current_market_messages = Message.objects.filter(market=shared_message.market).all()
+    logs = []
+    for message in current_market_messages:
+        logs.append(ShareLog.objects.filter(message=message.id))
+    if len(list(chain(*logs))) > 3:
+        coins = POINTS_RULES['share_more_than_three_messages_format']
     else:
-        current_ngo.add_coins(POINTS_RULES['for_share'])
+        coins = POINTS_RULES['for_share']
+    current_ngo.add_coins(coins)
+    save_log(shared_message, current_ngo, coins)
+    return dict(success="Dziękujemy za udostępnienie. Naliczone punkty: {}".format(coins))
 
 
-def save_log(msg, ngo):
-    log = ShareLog(message=msg, owner=ngo)
+def save_log(msg, ngo, coins):
+    log = ShareLog(message=msg, owner=ngo, coins=coins)
     log.save()
     return log

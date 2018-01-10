@@ -32,6 +32,6 @@ class NgoUser(Model):
             return True
         return False
 
-    def add_coins(self,number_to_add):
+    def add_coins(self, number_to_add):
         self.coins += Decimal(number_to_add)
         self.save()

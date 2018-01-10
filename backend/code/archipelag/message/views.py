@@ -63,5 +63,4 @@ def add_coins_if_rules_allow(ngo, market_id):
     messages = Message.objects.filter(market_id=market_id).count()
     if messages > 3:
         coins_to_add = POINTS_RULES['create_more_than_three_messages_format']
-        ngo_model = NgoUser()
-        ngo_model.add_coins(ngo, coins_to_add)
+        ngo.add_coins(coins_to_add)

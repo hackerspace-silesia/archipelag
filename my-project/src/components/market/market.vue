@@ -91,11 +91,11 @@
 
     <b-modal id="modalLogs" ok-only>
       <div v-for="log in logs">
-        <b-alert show>  <b-badge> {{log.owner_name }}</b-badge>  udostępnił na {{log.message}} {{getHumanDate(log.date_created)}} </b-alert>
+        <b-alert show>  <b-badge> {{log.owner_name }}</b-badge>  udostępnił na {{log.message}} {{getHumanDate(log.date_created)}} dodane punkty: {{log.coins}} </b-alert>
       </div>
     </b-modal>
     <b-modal id="modalPoints" ok-only>
-          Naliczono punkty za udostępnienie
+          {{modalPointsResponse}}
     </b-modal>
   </b-container>
   <loader v-show="isLoading"></loader>
@@ -140,6 +140,7 @@ export default {
       logs : {},
       actualSharedMessageId : '',
       isLoading: false,
+      modalPointsResponse: ''
     }
   },
   created(){
@@ -252,7 +253,11 @@ export default {
           axios.post(process.env.BACKEND+"share_log/"+message_id+"/")
         .then(response =>{
     // JSON responses are automatically parsed.
-      this.logs = response.data;
+    if ('success' in response.data){
+        this.modalPointsResponse = response.data.success;
+    }else{
+      this.modalPointsResponse = response.data.error;
+    }
       this.isLoading = false;
     }).catch(e => {
       this.isLoading = false;
