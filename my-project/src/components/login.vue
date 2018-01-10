@@ -37,6 +37,7 @@
 </div>
   <div class="col-md-2 text-center" >
   </div>
+    <loader v-show="isLoading"></loader>
 </div>
 </template>
 
@@ -47,6 +48,7 @@
   export default {
     data() {
       return{
+        isLoading:false,
           error:'',
           form:{
             username:'',
@@ -63,15 +65,24 @@
       submitForm(){
         console.log(process.env.BACKEND);
         if(this.areFieldsCorrect() === true){
-
+          this.isLoading=true;
           axios.post(process.env.BACKEND+"ngo/login/",this.form)
          .then(response =>{
+           this.isLoading=false;
             localStorage.setItem('jwtToken', response.data.token);
             this.$router.push('/');
          }).
            catch(e => {
+             this.isLoading=false;
              this.showDismissibleAlert=true
-          this.error = "Wpisz poprawną nazwę użytkownika i hasło."
+             const error_msg = (e.response)
+             if (e.response == undefined){
+                this.error = "Błąd po stronie serwera. Skontaktuj się z administratorem."
+             }else{
+                this.error = "Wpisz poprawną nazwę użytkownika i hasło."
+
+             }
+
          })
         }
 

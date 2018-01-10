@@ -5,9 +5,11 @@ import AddMessages from '@/components/add_messages'
 import AddMarket from '@/components/add_market'
 import LogIn from '@/components/login'
 import NotFound from '@/components/notFound'
-
+import hexagon from '@/components/hexagon-spinner.vue'
 import axios from 'axios';
+
 Vue.use(Router)
+Vue.component('loader',hexagon)
 
 const router = new Router({
     routes: [

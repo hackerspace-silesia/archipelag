@@ -8,10 +8,12 @@
 
 <script>
 import topnavbar from '@/components/topnavbar.vue'
+
 export default {
   name: 'app',
   components:{
-    topnavbar
+    topnavbar,
+
   },
 
 methods:{

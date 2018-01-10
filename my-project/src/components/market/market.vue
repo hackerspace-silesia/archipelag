@@ -86,6 +86,7 @@
           Naliczono punkty za udostępnienie
     </b-modal>
   </b-container>
+  <loader v-show="isLoading"></loader>
     </div>
 </template>
 
@@ -93,10 +94,14 @@
 import axios from 'axios';
 import moment from 'moment';
 
+
 const items = [
 ]
 
 export default {
+  components: {
+    axios,
+  },
   data () {
     return {
       items: items,
@@ -122,6 +127,7 @@ export default {
       messages : {},
       logs : {},
       actualSharedMessageId : '',
+      isLoading: false,
     }
   },
   created(){
@@ -164,37 +170,47 @@ export default {
         return moment(date).format('YYYY-MM-DD HH:mm');
     },
    get_all_messages: function () {
+     this.isLoading = true;
      axios.defaults.headers.common['Authorization'] = `JWT ${localStorage.getItem('jwtToken')}`;
      axios.get(process.env.BACKEND+"message/?format=json")
+
     .then(response =>{
     // JSON responses are automatically parsed.
     this.messages= response.data;
+    this.isLoading = false;
     }).
       catch(e => {
         this.errors.push(e)
+        this.isLoading = false;
       console.log(e);
     })
     },
     get_market:function(){
-
+          this.isLoading = true;
           axios.defaults.headers.common['Authorization'] = `JWT ${localStorage.getItem('jwtToken')}`;
           axios.get(process.env.BACKEND+"market/?format=json")
+
     .then(response =>{
     // JSON responses are automatically parsed.
     this.items= response.data;
+    this.isLoading = false;
     }).catch(e => {
         console.log(e)
       console.log(e);
+      this.isLoading = false;
     })
     },
     get_logs:function(market_id){
+      this.isLoading = true;
       axios.defaults.headers.common['Authorization'] = `JWT ${localStorage.getItem('jwtToken')}`;
           axios.get(process.env.BACKEND+"share_log/"+market_id+"/?format=json")
+
         .then(response =>{
     // JSON responses are automatically parsed.
       this.logs = response.data;
+      this.isLoading = false;
     }).catch(e => {
-
+      this.isLoading = false;
       console.log(e);
     })
     },
@@ -219,13 +235,15 @@ export default {
       this.$root.$emit('bv::show::modal', 'modalLogs');
     },
     sendShareEvent:function(message_id){
+      this.isLoading = true;
       axios.defaults.headers.common['Authorization'] = `JWT ${localStorage.getItem('jwtToken')}`;
           axios.post(process.env.BACKEND+"share_log/"+message_id+"/")
         .then(response =>{
     // JSON responses are automatically parsed.
       this.logs = response.data;
+      this.isLoading = false;
     }).catch(e => {
-
+      this.isLoading = false;
       console.log(e);
     })
     },

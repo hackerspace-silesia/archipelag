@@ -39,6 +39,7 @@
 
       </b-collapse>
     </b-card>
+        <loader v-show="isLoading"></loader>
   </div>
 </template>
 
@@ -60,6 +61,7 @@
       },
     data() {
       return {
+        isLoading:false,
         types:[],
         showDismissibleAlert: false,
         showDismissibleAlertError: false,
@@ -77,11 +79,13 @@
           type:type_id,
           market:this.$route.params.market_id,
         };
+        this.isLoading=true;
         axios.defaults.headers.common['Authorization'] = `JWT ${localStorage.getItem('jwtToken')}`;
               axios.post(process.env.BACKEND+`message/`, {
                 body: form
               })
               .then(response => {
+                this.isLoading=false;
                 console.log(response)
                 if ('success' in response['data']){
                   this.showDismissibleAlert = true;
@@ -93,6 +97,7 @@
 
               })
               .catch(e => {
+                this.isLoading=false;
                 console.log(e)
               })
             }

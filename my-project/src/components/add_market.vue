@@ -78,7 +78,7 @@
       <div class="col-md-3 center" >
       </div>
     </div>
-
+      <loader v-show="isLoading"></loader>
   </section>
 </template>
 
@@ -104,6 +104,7 @@
       },
     data() {
       return {
+        isLoading:false,
         showDismissibleAlertError:false,
         error:"",
         formSubmitted:false,
@@ -138,13 +139,13 @@
 
     submitForm(){
       if (this.form.title.length > 0){
-            this.form.date_starting;
-            this.form.date_ending;
+            this.isLoading = true
              axios.defaults.headers.common['Authorization'] = `JWT ${localStorage.getItem('jwtToken')}`;
             axios.post(process.env.BACKEND+`market/`, {
               body: this.form
             })
             .then(response => {
+              this.isLoading = false;
               if ('error' in response['data']){
                 this.showDismissibleAlertError = true;
                 this.error = response['data']['error']
@@ -156,6 +157,7 @@
 
             })
             .catch(e => {
+              this.isLoading = false;
               console.log(e)
             })
           }
