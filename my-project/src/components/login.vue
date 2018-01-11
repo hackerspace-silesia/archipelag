@@ -64,6 +64,8 @@
     methods: {
       submitForm(){
         console.log(process.env.BACKEND);
+        console.log("próba");
+        console.log("próba2");
         if(this.areFieldsCorrect() === true){
           this.isLoading=true;
           axios.post(process.env.BACKEND+"ngo/login/",this.form)

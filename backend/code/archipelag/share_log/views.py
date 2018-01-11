@@ -7,6 +7,7 @@ from archipelag.share_log.models import ShareLog
 from archipelag.share_log.serializers import ShareLogSerializer
 from archipelag.market.settings import POINTS_RULES
 from archipelag.message.models import Message
+from archipelag.message.models import MessageType
 
 
 class ShareLogList(viewsets.ViewSet):
@@ -33,12 +34,8 @@ def add_coins_for_share(current_ngo , message_id):
     shared_message = Message.objects.filter(id=message_id).first()
     if ShareLog.objects.filter(message=shared_message).first():
         return dict(error="Wiadomość juz udostępniono wcześniej.")
-    current_market_messages = Message.objects.filter(market=shared_message.market).all()
-    logs = []
-    for message in current_market_messages:
-        logs.append(ShareLog.objects.filter(message=message.id))
-    if len(list(chain(*logs))) > 3:
-        coins = POINTS_RULES['share_more_than_three_messages_format']
+    if shared_message.type.service == 'Facebook' or shared_message.type.service == 'Instagram' or shared_message.type.service == 'Twitter':
+        coins = POINTS_RULES['share_for_fb_twitter_insta']
     else:
         coins = POINTS_RULES['for_share']
     current_ngo.add_coins(coins)
