@@ -81,7 +81,8 @@
            <b-modal id="modalInfo"  @ok="handleSharedMessage" @hide="resetModal" :title="modalInfo.title" ok-title="Nalicz punkty za udostępnienie" cancel-title="Anuluj">
 
                      <b-form-textarea id="textarea1"
-                            :value="modalInfo.content">
+                            :value="modalInfo.content"
+                            :rows="5">
 
                       </b-form-textarea>
            </b-modal>
