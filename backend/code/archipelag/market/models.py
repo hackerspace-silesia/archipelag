@@ -1,10 +1,8 @@
 from django.db.models import CharField
-from django.db.models import DateField
 from django.db.models import DateTimeField
 from django.db.models import ForeignKey
 from django.db.models import Model
 from django.db.models import TextField
-from django.db.models import URLField
 
 from archipelag.ngo.models import NgoUser
 
@@ -12,7 +10,6 @@ from archipelag.ngo.models import NgoUser
 class Market(Model):
     owner = ForeignKey(NgoUser)
     title = CharField(max_length=120, blank=True, null=False)
-    description = CharField(max_length=10000,null=True)
     date_starting = DateTimeField(null=True, blank=True)
     date_ending = DateTimeField(null=True, blank=True)
     date_created = DateTimeField(auto_now_add=True)

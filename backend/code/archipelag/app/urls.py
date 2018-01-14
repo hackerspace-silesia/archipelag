@@ -29,22 +29,21 @@ from rest_framework.routers import DefaultRouter
 
 
 urlpatterns = [
-    url(r'^$', RedirectView.as_view(url='/market/', permanent=False), name='index'),
-    url(r'^admin/', admin.site.urls),
-    url(r'^accounts/login/$', LoginView.as_view(), name='login'),
-    url(r'^accounts/logout/$', LogoutView.as_view(), name='logout'),
-    url(r'^market/', include('archipelag.market.urls')),
-    url(r'^event_log/', include('archipelag.event_log.urls'), ),
-    url(r'^share_log/', include('archipelag.share_log.urls'), ),
-    url(r'^ngo/', include('archipelag.ngo.urls'), ),
+    url(r'^$', RedirectView.as_view(url='/api/market/', permanent=False), name='index'),
+    url(r'^api/admin/', admin.site.urls),
+    url(r'^api/accounts/login/$', LoginView.as_view(), name='login'),
+    url(r'^api/accounts/logout/$', LogoutView.as_view(), name='logout'),
+    url(r'^api/market/', include('archipelag.market.urls')),
+    url(r'^api/event_log/', include('archipelag.event_log.urls'), ),
+    url(r'^api/share_log/', include('archipelag.share_log.urls'), ),
+    url(r'^api/ngo/', include('archipelag.ngo.urls'), ),
 ]
 
 router = DefaultRouter()
-router.register(r'message', MessagesList, base_name='messages_list')
-router.register(r'messages_types', MessagesTypesList, base_name='messages_types_list')
+router.register(r'api/message', MessagesList, base_name='messages_list')
+router.register(r'api/messages_types', MessagesTypesList, base_name='messages_types_list')
 urlpatterns.extend(router.urls)
 
 if not settings.DEBUG:
-    # TODO: implement nginx support in docker-compose
     urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
 

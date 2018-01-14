@@ -121,9 +121,9 @@ export default {
       fields: [
         { key: 'owner', label: 'Organizacja', sortable: true, 'class': 'text-center' },
         { key: 'title', label: 'tytuł' , sortable: true,},
-        { key: 'description', label: 'opis',},
         { key: 'date_starting', label: "Rozpoczęcie" , sortable: true, formatter: 'getHumanDate'},
         { key: 'date_ending', label: 'Zakończenie', sortable: true, formatter: 'getHumanDate'},
+        { key: 'date_modified', label: 'Data modyfikacji', sortable: true, formatter: 'getHumanDate'},
         { key: 'hashtag', label: 'hashtag', sortable: true, },
         { key: "id", label:"Akcje"}
       ],

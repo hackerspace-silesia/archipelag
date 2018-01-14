@@ -10,9 +10,9 @@
 
       <!-- Right aligned nav items -->
       <b-navbar-nav class="ml-auto">
-    <router-link to="/market"><b-button >Targ</b-button></router-link>
-    <router-link to="/dodaj_market"> <b-button >Dodaj</b-button></router-link>
-    <b-button v-on:click="logout" >Wyloguj</b-button>
+    <router-link to="/market"><b-button class="col-12">Targ</b-button></router-link>
+    <router-link to="/dodaj_market"> <b-button class="col-12">Dodaj</b-button></router-link>
+    <b-button v-on:click="logout">Wyloguj</b-button>
       </b-navbar-nav>
 
     </b-collapse>

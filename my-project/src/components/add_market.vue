@@ -15,6 +15,8 @@
 
     <b-card bg-variant="light">
         <h2>Dodaj wydarzenie</h2>
+        <h3>1/2</h3>
+        <h4>Dodaj podstawowe informacje</h4>
         <hr>
         <form @submit.prevent="submitForm" v-if="!formSubmitted">
           <div class="row">
@@ -30,18 +32,6 @@
                   v-model="form.title">
                 </b-form-input>
               </b-form-group>
-              <b-form-group vertical
-                  label="Opis:"
-                  label-class="text-sm-right"
-                  label-for="description">
-                  <b-form-textarea id="description"
-                     v-model="form.description"
-                     placeholder="Opisz swoje wydarzenie"
-                     :rows="3"
-                     :max-rows="8"
-                     no-resize>
-                </b-form-textarea>
-                </b-form-group>
                 <b-form-group vertical
                     label="Hashtag:"
                     label-class="text-sm-right"
@@ -111,7 +101,6 @@
         form: {
           owner:1,
           title:"",
-          description:"",
           hashtag:"",
           date_starting: moment(null),
           date_ending: moment(null),

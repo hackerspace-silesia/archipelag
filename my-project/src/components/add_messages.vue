@@ -1,7 +1,9 @@
 <template>
   <div role="tablist">
     <hr>
-    <h2>Wybierz serwis na który ma być udostępniona wiadomość</h2>
+    <h2>Dodaj wydarzenie</h2>
+        <h3>1/2</h3>
+    <h4>Wybierz serwis na który ma być udostępniona wiadomość</h4>
     <hr>
     <b-alert variant="success"
        dismissible
