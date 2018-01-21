@@ -2,42 +2,29 @@
   <div role="tablist">
     <hr>
     <h2>Dodaj wydarzenie</h2>
-        <h3>1/2</h3>
+        <h3>2/2</h3>
     <h4>Wybierz serwis na który ma być udostępniona wiadomość</h4>
     <hr>
     <b-alert variant="success"
        dismissible
-       :show="showDismissibleAlert"
-       @dismissed="showDismissibleAlert=false"
+       :show="showDismissibleSuccess"
+       @dismissed="showDismissibleSuccess=false"
        >
     {{info}}
     </b-alert>
     <b-alert variant="danger"
        dismissible
-       :show="showDismissibleAlertError"
-       @dismissed="showDismissibleAlertError=false"
+       :show="showDismissibleError"
+       @dismissed="showDismissibleError=false"
        >
     {{error}}
     </b-alert>
     <b-card no-body class="mb-1" v-for="service in types">
       <b-card-header header-tag="header" class="p-1" role="tab">
-        <b-btn block v-b-toggle="service.service"  v-b-toggle.service.service variant="info" size="lg">{{service.service}}</b-btn>
+        <b-btn block v-b-toggle="service.service" v-on:click="closeInformations" v-b-toggle.service.service variant="info" size="lg">{{service.service}}</b-btn>
       </b-card-header>
       <b-collapse v-bind:id="service.service" accordion="my-accordion" role="tabpanel">
-          <form >
-<b-form-group class="col-md-12 center">
-            <textarea class="col-md-12 center" id="textarea2"
-                             state="invalid"
-                             :ref="service.id"
-                             placeholder="Wpisz wiadomość"
-                             :rows="3"
-                             :maxlength="service.char_restriction"
-                             required></textarea>
-                             <p class='text-right text-small'>max liczba znaków {{service.char_restriction}}</p>
-            <button class="btn btn-primary" type="submit" @click.prevent="getFormValues(service.id)"><i class="glyphicon glyphicon-ok"></i> Zapisz </button>
-
-</b-form-group>
-        </form>
+          <text-area-counter v-bind:service="service" v-bind:getFormValues="getFormValues"></text-area-counter>
 
       </b-collapse>
     </b-card>
@@ -47,9 +34,10 @@
 
 <script type="text/javascript">
   import axios from 'axios';
-
+ import textAreaCounter from './text-area-with-counter';
   export default {
     name:'AddMessages',
+
     created(){
        axios.defaults.headers.common['Authorization'] = `JWT ${localStorage.getItem('jwtToken')}`;
       axios.get(process.env.BACKEND+`messages_types/`)
@@ -65,19 +53,39 @@
       return {
         isLoading:false,
         types:[],
-        showDismissibleAlert: false,
+        showDismissibleSuccess: false,
         showDismissibleAlertError: false,
         info:'',
         error:'',
       }
     },
     components: {
-      axios
+      'axios':axios,
+      'text-area-counter':textAreaCounter,
     },
     methods: {
-      getFormValues(type_id){
+      getCharNumber(content){
+        return content.length
+      },
+      closeInformations(){
+        this.showDismissibleSuccess = false;
+        this.showDismissibleError = false;
+      },
+      getFormValues(message, type_id, restriction){
+        if (message.length <= 0){
+          this.showDismissibleSuccess = false;
+          this.showDismissibleError = true;
+          this.error = "Wiadomosć nie może być pusta";
+        }
+        else if (message.length>restriction) {
+          let distinction = message.length - restriction;
+          this.showDismissibleSuccess = false;
+          this.showDismissibleError = true;
+          this.error = "Przekroczono maksymalną ilość znaków o "+distinction;
+        }
+        else{
         const form={
-          content:this.$refs[type_id][0].value,
+          content:message,
           type:type_id,
           market:this.$route.params.market_id,
         };
@@ -90,10 +98,12 @@
                 this.isLoading=false;
                 console.log(response)
                 if ('success' in response['data']){
-                  this.showDismissibleAlert = true;
-                    this.info = "Dodano wiadomość do udostępniania.";
+                  this.showDismissibleSuccess = true;
+                    this.showDismissibleError = false;
+                    this.info = response.data.success
                 }else{
-                  this.showDismissibleAlertError = true;
+                  this.showDismissibleError = true;
+                  this.showDismissibleSuccess = false;
                     this.error = response.data['error'];
                 }
 
@@ -103,6 +113,7 @@
                 console.log(e)
               })
             }
+          }
         },
 }
 </script>
