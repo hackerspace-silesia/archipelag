@@ -4,6 +4,7 @@ RUN yarn build
 FROM hssilesia/archipelag
 
 RUN mkdir /django-static/
+
 RUN python manage.py collectstatic --noinput
 
 FROM kyma/docker-nginx

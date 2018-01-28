@@ -25,7 +25,6 @@
       </b-card-header>
       <b-collapse v-bind:id="service.service" accordion="my-accordion" role="tabpanel">
           <text-area-counter v-bind:service="service" v-bind:getFormValues="getFormValues"></text-area-counter>
-
       </b-collapse>
     </b-card>
         <loader v-show="isLoading"></loader>
