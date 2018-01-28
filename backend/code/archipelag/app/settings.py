@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     'archipelag.market',
     'archipelag.message',
     'archipelag.share_log',
+    'archipelag.notification',
     'bootstrap3',
     'rest_framework',
     'corsheaders',
