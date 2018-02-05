@@ -24,6 +24,7 @@ from django.conf import settings
 
 from archipelag.message.views import MessagesList
 from archipelag.message.views import MessagesTypesList
+from archipelag.ngo.views import NgoUserList
 
 from rest_framework.routers import DefaultRouter
 
@@ -42,6 +43,7 @@ urlpatterns = [
 router = DefaultRouter()
 router.register(r'api/message', MessagesList, base_name='messages_list')
 router.register(r'api/messages_types', MessagesTypesList, base_name='messages_types_list')
+router.register(r'api/ngo', NgoUserList, base_name='all_ngos')
 urlpatterns.extend(router.urls)
 
 if not settings.DEBUG:

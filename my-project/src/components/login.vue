@@ -16,7 +16,7 @@
           <h2>Witaj w archipelagu</h2>
 
           <b-form-group vertical
-                        label="Użytkownik:"
+                        label="Username:"
                         label-class="text-sm-center"
                         label-for="username">
             <b-form-input v-model="form.username" id="lousernamegin"></b-form-input>
@@ -30,13 +30,16 @@
 
         </b-form-group>
         <div class="form-group">
-          <button class="btn btn-primary" type="submit"><i class="glyphicon glyphicon-ok"></i> Zaloguj </button>
+          <button class="btn btn-primary" type="submit" @keyup.enter="submitForm"><i class="glyphicon glyphicon-ok"></i> Zaloguj </button>
+        </div>
+        <div class="col-md-12 text-center" >
+          Jeżeli jeszcze nie masz konta, zarejestruj się <router-link to="/signUp"><a> tutaj</a></router-link>
         </div>
       </b-card>
     </form>
+
 </div>
-  <div class="col-md-2 text-center" >
-  </div>
+
     <loader v-show="isLoading"></loader>
 </div>
 </template>
@@ -63,9 +66,6 @@
     },
     methods: {
       submitForm(){
-        console.log(process.env.BACKEND);
-        console.log("próba");
-        console.log("próba2");
         if(this.areFieldsCorrect() === true){
           this.isLoading=true;
           axios.post(process.env.BACKEND+"ngo/login/",this.form)

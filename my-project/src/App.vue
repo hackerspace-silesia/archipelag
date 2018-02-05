@@ -1,6 +1,6 @@
 <template>
   <div id="app">
-    <topnavbar v-show="$route.path==='/login' ? false : true"/>
+    <topnavbar v-show="$route.path==='/login' | $route.path==='/signUp' ? false : true"/>
     {{ready()}}
     <router-view/>
   </div>

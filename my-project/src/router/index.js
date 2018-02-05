@@ -4,6 +4,7 @@ import Market from '@/components/market/market'
 import AddMessages from '@/components/new_message/add_messages'
 import AddMarket from '@/components/add_market'
 import LogIn from '@/components/login'
+import SignUp from '@/components/signUp/signUp'
 import NotFound from '@/components/notFound'
 import hexagon from '@/components/hexagon-spinner.vue'
 import axios from 'axios';
@@ -35,6 +36,11 @@ const router = new Router({
             path: '/login',
             name: 'LogIn',
             component: LogIn
+        },
+        {
+            path: '/signup',
+            name: 'SignUp',
+            component: SignUp
         },
         {
             path: '/dodaj_wiadomosc/:market_id',
