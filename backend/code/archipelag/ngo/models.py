@@ -13,7 +13,7 @@ from archipelag.market.settings import POINTS_RULES
 
 class NgoUser(Model):
     user = OneToOneField(User, on_delete=CASCADE)
-    name = CharField(max_length=100, unique = True)
+    organisation = CharField(max_length=100, unique=True)
     coins = DecimalField(max_digits=100, decimal_places=1, default=10.0, validators=[MinValueValidator(Decimal('0.00'))])
     fb_token = CharField(max_length=256, blank=True)
     twitter_token = CharField(max_length=256, blank=True)

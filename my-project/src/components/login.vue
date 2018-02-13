@@ -2,7 +2,7 @@
 <div id="login">
     <div class="col-md-2 text-center" >
     </div>
-  <div class="col-md-12 text-center" >
+  <div class="col-md-8 mx-auto text-center" >
 
     <form @submit.prevent="submitForm">
       <b-card bg-variant="light">
@@ -16,7 +16,7 @@
           <h2>Witaj w archipelagu</h2>
 
           <b-form-group vertical
-                        label="Username:"
+                        label="Nick:"
                         label-class="text-sm-center"
                         label-for="username">
             <b-form-input v-model="form.username" id="lousernamegin"></b-form-input>

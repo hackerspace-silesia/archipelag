@@ -1,9 +1,7 @@
 <template>
-<div id="login">
-    <div class="col-md-2 text-center" >
-    </div>
-  <div class="col-md-12 text-center" >
+<div id="signUp">
 
+  <div class="col-md-8 mx-auto text-center" v-if="duringCreating">
     <form @submit.prevent="submitForm" @keyup.enter="submitForm">
       <b-card bg-variant="light">
         <b-alert variant="danger"
@@ -15,7 +13,7 @@
         </b-alert>
           <h2>Zarejestruj się</h2>
           <b-form-group vertical
-                        label="Username:"
+                        label="Nick do logowania:"
                         label-class="text-sm-center"
                         label-for="username">
             <b-form-input v-model="form.username" id="username"></b-form-input>
@@ -43,12 +41,19 @@
       </b-card>
     </form>
 </div>
-  <div class="col-md-2 text-center" >
-  </div>
+<div v-else>
+  <b-alert class="col-md-8 mx-auto text-center"  variant="success" show>
+    Twoje konto zostało stworzone poprawnie
+    zaloguj się za pomocą nicku
+    <router-link to="/login">
+      <a> tutaj</a>
+    </router-link>
+    </b-alert>
+</div>
+
     <loader v-show="isLoading"></loader>
 </div>
 </template>
-
 <script type="text/javascript">
   import passwordValidator from './passwordValidator';
   import emailValidator from './emailValidator';
@@ -56,7 +61,6 @@
   import axios from 'axios';
 
   export default {
-
     data() {
       return{
         isLoading:false,
@@ -67,8 +71,9 @@
             organisation:'',
             password:'',
             email:'',
+            ngo : null,
           },
-          ngo : null,
+          duringCreating: true,
           showDismissibleAlert: false
     }
     },
@@ -87,52 +92,49 @@
         this.isValid = isValid;
         this.form.email = emailValue;
       },
-      recomendatorUpdate(isValid, ngoName){
-          if( isValid){
-          this.ngo = ngoName
-        }
-        else{
-          this.ngo = null;
-        }
+      recomendatorUpdate(ngoName){
+          this.form.ngo = ngoName;
       },
-
       submitForm(){
+        this.showDismissibleAlert = false;
         if(this.areFieldsCorrect() === true){
           this.isLoading=true;
           axios.post(process.env.BACKEND+"ngo/",this.form)
-         .then(response =>{
+        .then(response =>{
            this.isLoading=false;
+           if ("error" in response.data){
+              this.showDismissibleAlert = true;
+              this.error = response.data.error;
+           }else{
+             console.log("false")
+             this.duringCreating = false;
+           }
          }).
            catch(e => {
-             this.isLoading=false;
-             this.showDismissibleAlert=true
-             const error_msg = (e.response)
-             if (e.response == undefined){
+             this.isLoading = false;
+             this.showDismissibleAlert = true;
+             const error_msg = e.response
+             if (error_msg == undefined){
                 this.error = "Błąd po stronie serwera. Skontaktuj się z administratorem."
              }else{
                 this.error = "Wpisz poprawną nazwę użytkownika i hasło."
-
              }
-
          })
         }
-
       },
       areFieldsCorrect(){
-        console.log(this.form)
         if (this.form.username == "" | (this.form.organisation == "")) {
-          this.showDismissibleAlert=true
-         this.error = "Wypełnij puste pola"
-         return false;
+            this.showDismissibleAlert = true
+            this.error = "Wypełnij puste pola"
+            return false;
        } else if (this.isValid == false) {
-          this.showDismissibleAlert = true
-          this.error = "Nie wszystkie pola zostały wypełnione poprawnie";
-          return false;
+            this.showDismissibleAlert = true
+            this.error = "Nie wszystkie pola zostały wypełnione poprawnie";
+            return false;
         }else{
-          return true;
+            return true;
       }
     },
-
   }
 }
 
