@@ -49,11 +49,11 @@ services:
         - DJANGO_DEBUG=1
 
   frontend:
-    build: ./my-project
+    build: ./frontend
     image: frontend
     ports:
       - 8080:8080
     volumes:
-      - ./my-project:/usr/src/app
+      - ./frontend:/usr/src/app
 volumes:
   postgres-data:
