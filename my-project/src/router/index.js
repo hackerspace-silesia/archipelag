@@ -63,7 +63,7 @@ router.beforeEach((to, from, next) => {
     .then(response =>{
       const user_data = response.data.user;
       localStorage.setItem('coins', user_data.coins);
-      localStorage.setItem('ngo_name', user_data.name);
+
       next()
     }).catch(e => {
       next({

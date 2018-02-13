@@ -72,6 +72,8 @@
          .then(response =>{
            this.isLoading=false;
             localStorage.setItem('jwtToken', response.data.token);
+            console.log(response.data.user.organisation)
+            localStorage.setItem('ngo_name',  response.data.user.organisation);
             this.$router.push('/');
          }).
            catch(e => {

@@ -3,7 +3,7 @@ from archipelag.market.models import Market
 
 
 class MarketSerializer(serializers.ModelSerializer):
-    owner = serializers.ReadOnlyField(source='owner.name')
+    owner = serializers.ReadOnlyField(source='owner.organisation')
 
     class Meta:
         model = Market
