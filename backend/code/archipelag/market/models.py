@@ -2,10 +2,9 @@ from django.db.models import CharField
 from django.db.models import DateTimeField
 from django.db.models import ForeignKey
 from django.db.models import Model
-from django.db.models import TextField
+from django.db.models import ImageField
 
 from archipelag.ngo.models import NgoUser
-
 
 class Market(Model):
     owner = ForeignKey(NgoUser)
@@ -22,7 +21,7 @@ class Market(Model):
 
 class Image(Model):
     market = ForeignKey(Market, null=False)
-    image_path = TextField(max_length=2048, blank=False)
+    image_path = ImageField(upload_to="market/images/", null=True, blank=True)
 
     def __str__(self):
         return str(self.image_path)

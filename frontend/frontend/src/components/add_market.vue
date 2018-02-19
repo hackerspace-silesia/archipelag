@@ -8,17 +8,17 @@
     {{error}}
     </b-alert>
 
-    <div class="row">
+    <div class="row" >
       <div class="col-md-3 center" >
       </div>
       <div class="col-md-6 center" >
 
     <b-card bg-variant="light">
         <h2>Dodaj wydarzenie</h2>
-        <h3>1/3</h3>
+        <h3>1/2</h3>
         <h4>Dodaj podstawowe informacje</h4>
         <hr>
-        <form @submit.prevent="submitForm" v-if="!formSubmitted">
+        <form @submit.prevent="submitForm" v-if="!isSubmitted">
           <div class="row">
             <div class="col-md-12 text-center" >
               <b-form-group
@@ -54,6 +54,7 @@
             </div>
           </div>
           <hr>
+                  <uploader :my-url="imagesUrl" ref="myVueDropzone" @uploadInformation="getFilesSendInformation"  ></uploader>
           <div class="form-group">
             <button class="btn btn-primary" type="submit"><i class="glyphicon glyphicon-ok"></i> Zapisz </button>
           </div>
@@ -61,6 +62,7 @@
         </form>
         <div v-else>
           Dodano wydarzenie, dodaj wiadomości do udostępniania
+            <router-link :to="nextUrl"> <b-button >Przejdź do dodawania wiadomości</b-button></router-link>
         </div>
         </b-card>
       </div>
@@ -68,7 +70,9 @@
       </div>
     </div>
       <loader v-show="isLoading"></loader>
+
   </section>
+
 </template>
 
 <script type="text/javascript">
@@ -78,6 +82,7 @@
 
   import 'eonasdan-bootstrap-datetimepicker/build/css/bootstrap-datetimepicker.css';
   import axios from 'axios';
+    import ImagesUploader from '@/components/images_uploader.vue'
 
   export default {
     computed: {
@@ -93,6 +98,9 @@
       },
     data() {
       return {
+        isSubmitted:false,
+        imagesUrl:'/test',
+        nextUrl:'/messages',
         isLoading:false,
         showDismissibleAlertError:false,
         error:"",
@@ -115,17 +123,27 @@
             format: 'YYYY-MM-DD HH:mm',
             minDate: moment(),
             sideBySide: true,
-          }
+          },
         },
       }
     },
     components: {
       datePicker,
       axios,
+        'uploader':ImagesUploader
     },
     methods: {
+      getFilesSendInformation(info){
+        console.log(info)
+        console.log("skonczone")
+        this.isSubmitted = true;
+        this.isLoading = false;
 
+        // this.$router.push('/dodaj_wiadomosc/'+333);
+      },
     submitForm(){
+
+
       if (this.form.title.length > 0){
             this.isLoading = true
             axios.defaults.headers.common['Authorization'] = `JWT ${localStorage.getItem('jwtToken')}`;
@@ -133,7 +151,8 @@
               body: this.form
             })
             .then(response => {
-              this.isLoading = false;
+
+
               this.redirectOrReturnError(response['data']);
             })
             .catch(e => {
@@ -143,7 +162,6 @@
             })
           }
       },
-
       redirectOrReturnError(response){
         if ('error' in response){
           this.showDismissibleAlertError = true;
@@ -151,11 +169,22 @@
           this.isLoading = false;
         }
         else{
-          this.imagesUrl = process.env.BACKEND+'images/';
+          this.imagesUrl = process.env.BACKEND+'yolo';
           const market_id = response['success']['market_id'];
-           this.$router.push('/dodaj_obrazek/'+market_id);
+          this.nextUrl ='/dodaj_wiadomosc/'+market_id,
+
+          this.$refs.myVueDropzone.getUploader().setOption('url', 'totototo')
+
+          if (this.$refs.myVueDropzone.getUploader().getAcceptedFiles().length>0){
+            this.$refs.myVueDropzone.getUploader().processQueue();
+          }else{
+            this.isSubmitted = true;
+            this.isLoading = false;
           }
-        },
+
+
+        }
+      },
 
       onStartChange(e) {
         console.log('onStartChange', e.date);

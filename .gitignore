@@ -21,8 +21,8 @@ graph.dot
 graph.png
 .p
 venv_*
-todo.txt
 .idea
 .vscode
 .env
 *.sqlite3
+backend/code/archipelag/market/images/
