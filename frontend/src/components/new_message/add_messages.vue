@@ -14,8 +14,8 @@
     </b-alert>
     <b-alert variant="danger"
        dismissible
-       :show="showDismissibleError"
-       @dismissed="showDismissibleError=false"
+       :show="showDismissibleAlertError"
+       @dismissed="showDismissibleAlertError=false"
        >
     {{error}}
     </b-alert>
@@ -68,18 +68,18 @@
       },
       closeInformations(){
         this.showDismissibleSuccess = false;
-        this.showDismissibleError = false;
+        this.showDismissibleAlertError = false;
       },
       getFormValues(message, type_id, restriction){
         if (message.length <= 0){
           this.showDismissibleSuccess = false;
-          this.showDismissibleError = true;
+          this.showDismissibleAlertError = true;
           this.error = "Wiadomosć nie może być pusta";
         }
         else if (message.length>restriction) {
           let distinction = message.length - restriction;
           this.showDismissibleSuccess = false;
-          this.showDismissibleError = true;
+          this.showDismissibleAlertError = true;
           this.error = "Przekroczono maksymalną ilość znaków o "+distinction;
         }
         else{
@@ -98,10 +98,10 @@
                 console.log(response)
                 if ('success' in response['data']){
                   this.showDismissibleSuccess = true;
-                    this.showDismissibleError = false;
+                    this.showDismissibleAlertError = false;
                     this.info = response.data.success
                 }else{
-                  this.showDismissibleError = true;
+                  this.showDismissibleAlertError = true;
                   this.showDismissibleSuccess = false;
                     this.error = response.data['error'];
                 }

@@ -64,7 +64,7 @@ class UploadedImagesViewSet(viewsets.ModelViewSet):
         image_fields = request.data
         market_id = image_fields.get("market_id")
         newest_market = Market.objects.filter(id=market_id).first()
-        if not newest_market:
+        if newest_market is None:
             return Response(dict(error="Prośba o dodanie obrazka do nieistniejącego marketu"))
         number_of_market_images = Image.objects.filter(market=newest_market).count()
         if number_of_market_images <= 3:
@@ -73,5 +73,5 @@ class UploadedImagesViewSet(viewsets.ModelViewSet):
                 market=newest_market
             )
             return Response(dict(success="Przesłano poprawnie"))
-        number_of_market_images = Image.objects.filter(market=newest_market).count()
-        return Response(dict(error="Do marketu już dodano {} obrazków.".format(number_of_market_images)))
+        new_number_of_market_images = Image.objects.filter(market=newest_market).count()
+        return Response(dict(error="Do marketu już dodano {} obrazków.".format(new_number_of_market_images)))

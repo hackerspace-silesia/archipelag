@@ -2,11 +2,11 @@
   <section class="container">
     <h2>Dodaj wydarzenie</h2>
         <h3>2/3</h3>
-          <h4>Dodaj obrazki do marketu - maksymalnie 4 po 0,5 MB</h4>
+          <h4>Dodaj obrazki do marketu - maksymalnie 4 po 0.5 MB</h4>
     <div>
       <b-alert  :show="isError" variant="danger">{{error}}</b-alert>
         <b-alert  :show="isSuccess" variant="success">{{success}}</b-alert>
-        <form @submit.prevent="submitForm" v-if="!formSubmitted">
+        <form @submit.prevent="submitForm" >
           <vueDropzone ref="myVueDropzone" id="myVueDropzone"
           v-on:vdropzone-success="showSuccess"
           v-on:vdropzone-error="showError"
@@ -15,7 +15,7 @@
           >
           </vueDropzone>
       <div class="form-group">
-            <button class="btn btn-primary" type="submit"><i class="glyphicon glyphicon-ok"></i> Prześlij obrazki i przejdź dalej </button>
+            <button class="btn btn-primary"  v-if="!formSubmitted" type="submit"><i class="glyphicon glyphicon-ok"></i> Prześlij obrazki </button>
           </div>
         </form>
           <button class="btn btn-primary" v-on:click="nextPage"><i class="glyphicon glyphicon-ok"></i> Przejdź dalej </button>
@@ -42,7 +42,7 @@ import 'vue2-dropzone/dist/vue2Dropzone.css';
                 maxFiles:4,
                 dictDefaultMessage: 'Kliknij aby dodać obrazki z komputera, lub przeciągnij je tutaj.',
                 addRemoveLinks: true,
-                dictFileTooBig:"Zbyt duży",
+                dictFileTooBig:"Zbyt duży plik, max 0.5 MB",
                 dictInvalidFileType:"Zły typ",
                 dictRemoveFile:"Usuń",
                 dictMaxFilesExceeded:"Za dużo plików, max 4",
@@ -58,6 +58,7 @@ import 'vue2-dropzone/dist/vue2Dropzone.css';
         error:"",
         formSubmitted:false,
         success:"",
+        isSuccess:false,
       }
     },
     components: {
@@ -81,7 +82,8 @@ import 'vue2-dropzone/dist/vue2Dropzone.css';
           this.isError = false
           this.isSuccess = true;
           this.success = message.success;
-          this.nextPage();
+          this.formSubmitted = true;
+          this.$refs.myVueDropzone.disable()
         }
         console.log('A file was successfully uploaded')
           this.isLoading = false;
@@ -89,8 +91,8 @@ import 'vue2-dropzone/dist/vue2Dropzone.css';
       'showError':function(file, message, xhr){
         this.isError = true;
         this.error = message;
-          this.isLoading = false;
-              this.isSuccess = false;
+        this.isLoading = false;
+        this.isSuccess = false;
       },
       getFilesSendInformation(info){
         this.isSubmitted = true;
