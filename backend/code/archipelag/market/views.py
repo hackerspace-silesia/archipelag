@@ -10,7 +10,7 @@ from rest_framework.response import Response
 
 
 class MarketList(viewsets.ModelViewSet):
-    queryset = Market.objects.all()
+    queryset = Market.objects.order_by('-date_created')
     permission_classes = (IsAuthenticated,)
     serializer_class = MarketSerializer
 
