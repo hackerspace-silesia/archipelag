@@ -5,7 +5,7 @@ from django.db.models import Model
 from django.db.models import ImageField
 
 from archipelag.ngo.models import NgoUser
-from archipelag.market.utils import unique_filename
+
 
 class Market(Model):
     owner = ForeignKey(NgoUser)
