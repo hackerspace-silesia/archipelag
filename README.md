@@ -23,3 +23,9 @@ docker-compose run --rm backend python manage.py createsuperuser
 ```bash
 cp .env_example .env
 ```
+
+### How run tests?
+
+```bash
+docker-compose run --rm backend python -m pytest
+```

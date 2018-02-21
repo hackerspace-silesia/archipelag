@@ -113,7 +113,7 @@ USE_TZ = True
 STATICFILES_DIRS = (
     os.path.join(BASE_DIR, "static"),
 )
-
+MEDIA_URL='/media/'
 STATIC_URL = os.environ.get('DJANGO_STATIC_FILES', '/static/')
 STATIC_ROOT = '/django-static/'
 LOGIN_REDIRECT_URL = '/market/'
@@ -129,6 +129,7 @@ EMAIL_HOST_PASSWORD = ''
 EMAIL_PORT = 1025
 EMAIL_USE_TLS = False
 NOTIFICATION_FROM_EMAIL = 'notification@example.com'
+
 
 CORS_ORIGIN_WHITELIST = (
     '127.0.0.1:8080',

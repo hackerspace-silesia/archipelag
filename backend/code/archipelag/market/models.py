@@ -1,13 +1,17 @@
+from uuid import uuid4
+
 from django.db.models import CharField
 from django.db.models import DateTimeField
 from django.db.models import ForeignKey
 from django.db.models import Model
-from django.db.models import TextField
+from django.db.models import ImageField
+from django.db.models import UUIDField
 
 from archipelag.ngo.models import NgoUser
 
 
 class Market(Model):
+    id = UUIDField(primary_key=True, default=uuid4, editable=False, unique=True)
     owner = ForeignKey(NgoUser)
     title = CharField(max_length=120, blank=True, null=False)
     date_starting = DateTimeField(null=True, blank=True)
@@ -22,7 +26,7 @@ class Market(Model):
 
 class Image(Model):
     market = ForeignKey(Market, null=False)
-    image_path = TextField(max_length=2048, blank=False)
+    image_path = ImageField(upload_to="market/images/", null=True, blank=True)
 
     def __str__(self):
         return str(self.image_path)

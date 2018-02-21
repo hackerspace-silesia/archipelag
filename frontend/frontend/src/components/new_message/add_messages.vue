@@ -2,7 +2,7 @@
   <div role="tablist">
     <hr>
     <h2>Dodaj wydarzenie</h2>
-        <h3>3/3</h3>
+        <h3>2/2</h3>
     <h4>Wybierz serwis na który ma być udostępniona wiadomość</h4>
     <hr>
     <b-alert variant="success"
@@ -14,8 +14,8 @@
     </b-alert>
     <b-alert variant="danger"
        dismissible
-       :show="showDismissibleAlertError"
-       @dismissed="showDismissibleAlertError=false"
+       :show="showDismissibleError"
+       @dismissed="showDismissibleError=false"
        >
     {{error}}
     </b-alert>
@@ -68,18 +68,18 @@
       },
       closeInformations(){
         this.showDismissibleSuccess = false;
-        this.showDismissibleAlertError = false;
+        this.showDismissibleError = false;
       },
       getFormValues(message, type_id, restriction){
         if (message.length <= 0){
           this.showDismissibleSuccess = false;
-          this.showDismissibleAlertError = true;
+          this.showDismissibleError = true;
           this.error = "Wiadomosć nie może być pusta";
         }
         else if (message.length>restriction) {
           let distinction = message.length - restriction;
           this.showDismissibleSuccess = false;
-          this.showDismissibleAlertError = true;
+          this.showDismissibleError = true;
           this.error = "Przekroczono maksymalną ilość znaków o "+distinction;
         }
         else{
@@ -98,10 +98,10 @@
                 console.log(response)
                 if ('success' in response['data']){
                   this.showDismissibleSuccess = true;
-                    this.showDismissibleAlertError = false;
+                    this.showDismissibleError = false;
                     this.info = response.data.success
                 }else{
-                  this.showDismissibleAlertError = true;
+                  this.showDismissibleError = true;
                   this.showDismissibleSuccess = false;
                     this.error = response.data['error'];
                 }

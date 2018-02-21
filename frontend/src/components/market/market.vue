@@ -83,7 +83,6 @@
                      <b-form-textarea id="textarea1"
                             :value="modalInfo.content"
                             :rows="5">
-
                       </b-form-textarea>
            </b-modal>
       </template>
