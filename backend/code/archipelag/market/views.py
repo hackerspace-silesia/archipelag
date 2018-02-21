@@ -7,6 +7,7 @@ from archipelag.market.serializers import MarketImageSerializer
 from rest_framework.permissions import IsAuthenticated
 from rest_framework import viewsets
 from rest_framework.response import Response
+from rest_framework.exceptions import ValidationError
 
 
 class MarketList(viewsets.ModelViewSet):
@@ -21,33 +22,36 @@ class MarketList(viewsets.ModelViewSet):
         :return information about reason why he can't
                 create market or id of new market
         """
-        print(request.data)
         market_fields = request.data['body']
         current_ngo = request.user.ngouser
-        if not current_ngo.is_user_can_add_market():
-            return Response(dict(error="Za mało punktów."))
-        if not is_fields_are_valid(market_fields):
-            return Response(dict(error="Błędne wartość pól."))
+        errors = self.get_errors_during_validate(current_ngo, market_fields)
+        if errors is not None:
+           return errors
+        try:
+            new_market = self.get_new_market(current_ngo, market_fields)
+        except TypeError as error:
+            return Response(dict(error=str(error)))
         current_ngo.subtract_coins(POINTS_RULES['add_own_market'])
-        new_market = get_new_market(current_ngo, market_fields)
         return Response(dict(success={'market_id': new_market.id}))
 
+    def get_errors_during_validate(self, current_ngo, market_fields):
+        if not current_ngo.is_user_can_add_market():
+            return Response(dict(error="Za mało punktów."))
+        try:
+            self.validate_market(market_fields)
+        except ValidationError as error:
+            return Response(dict(error=error.detail))
+        return None
 
-def is_fields_are_valid(market_fields):
-    form = MarketSerializer(data=market_fields)
-    return form.is_valid(raise_exception=True)
+    def validate_market(self, market_fields):
+        form = MarketSerializer(data=market_fields)
+        return form.is_valid(raise_exception=True)
 
-
-def get_new_market(current_ngo, body_data):
-    """Create market and return."""
-    new_market = Market.objects.create(
-        owner=current_ngo,
-        title=body_data["title"],
-        date_starting=body_data["date_starting"],
-        date_ending=body_data["date_ending"],
-        hashtag=body_data["hashtag"]
-    )
-    return new_market
+    def get_new_market(self, current_ngo, body_data):
+        """Create market and return."""
+        body_data["owner"] = current_ngo
+        new_market = Market.objects.create(**body_data)
+        return new_market
 
 
 class UploadedImagesViewSet(viewsets.ModelViewSet):
