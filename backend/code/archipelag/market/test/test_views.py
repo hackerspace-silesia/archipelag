@@ -2,13 +2,14 @@ from unittest.mock import patch
 
 from django.contrib.auth.models import User
 from django.test import TestCase
+from django.test import Client
 from rest_framework.test import APIClient
-from rest_framework.test import APITestCase
+from django.forms.models import model_to_dict
+from pytest import fixture
 
 from archipelag.ngo.models import NgoUser
 from archipelag.market.models import Market
-from rest_framework_jwt import utils, views
-from django.forms.models import model_to_dict
+
 
 class BaseTestCase(TestCase):
 
@@ -16,10 +17,10 @@ class BaseTestCase(TestCase):
         self.email = 'jpueblo@example.com'
         self.username = 'jpueblo'
         self.password = 'password'
-        user = User.objects.create_user(
+        self.user = User.objects.create_user(
             self.username, self.email, self.password)
-        self.user = NgoUser.objects.create(
-            user=user, organisation="org")
+        self.ngo = NgoUser.objects.create(
+            user=self.user, organisation="org", coins=10)
 
         self.data = {
             'username': self.username,
@@ -31,24 +32,38 @@ class MarketTestCase(BaseTestCase):
     def setUp(self):
         super(MarketTestCase, self).setUp()
 
+    # @fixture
+    # def mock_required_authenticate(self):
+    #     with  as mock:
+    #         mock.return_value = None
+    #         return mock
+
     def test_create_market_when_not_jwt(self):
         user = dict(title="123")
         client = APIClient().post('/api/market/', user, format='json')
         assert client.json()["detail"] == 'Authentication credentials were not provided.'
 
-    @patch('archipelag.market.views.MarketList.permission_classes')
-    def test_create_market_when_correct(self, authentication):
-        # orig_token = self.get_token()
-        authentication.return_value = None
-        # Now try to get a refreshed token
-        # response = client.post('/auth-token-verify/', ,
-        #                        format='json')
-        # user = dict(title="123")
-        expected_market = Market.objects.create(owner=self.user, title="treerr", hashtag="#ff")
-        client = APIClient().get('/api/market/', format="json")
-        print(client.json()[0])
-        print(model_to_dict(expected_market))
-        assert client.json()[0]["title"] ==Market.value_list('title')
+    @patch('archipelag.market.views.MarketList.permission_classes', [])
+    def test_get_market_ordered_by_newest(self):
+        expected_market = Market.objects.create(owner=self.ngo, title="1", hashtag="#1")
+        expected_market2 = Market.objects.create(owner=self.ngo, title="2", hashtag="#2")
+        market_list = APIClient().get('/api/market/', format="json").json()
+
+        oldest_market = model_to_dict(expected_market)
+        newest_market = model_to_dict(expected_market2)
+        assert market_list[0]["title"] ==newest_market['title']
+        assert market_list[1]["title"] ==oldest_market['title']
+
+    # @patch('archipelag.market.views.MarketList.permission_classes', [])
+    def test_create_market(self):
+        client = APIClient()
+        yolo = client.force_authenticate(self.user)
+        print(yolo)
+        market = {'body': {'title': 'jjj', 'hashtag': 'hh', 'date_starting': '2018-02-20 23:50', 'date_ending': '2018-02-20 23:50'}}
+
+        market_list = client.post('/api/market/', market, format="json").json()
+
+        assert market_list == {'success': {'market_id': 1}}
 
 # class VerifyJSONWebTokenTestsSymmetric(TokenTestCase):
 #

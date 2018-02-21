@@ -21,6 +21,7 @@ class MarketList(viewsets.ModelViewSet):
         :return information about reason why he can't
                 create market or id of new market
         """
+        print(request.data)
         market_fields = request.data['body']
         current_ngo = request.user.ngouser
         if not current_ngo.is_user_can_add_market():

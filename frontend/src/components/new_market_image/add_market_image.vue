@@ -65,6 +65,17 @@ import 'vue2-dropzone/dist/vue2Dropzone.css';
       vueDropzone: vue2Dropzone
     },
     methods: {
+        'vdropzone-max-files-exceeded':function(file){
+          this.$refs.myVueDropzone.removeFile(file)
+      },
+      'duplicate-file':function(file){
+        this.$refs.myVueDropzone.removeFile(file)
+      },
+      'vdropzone-files-added':function(file){
+          this.isError = false;
+          this.isSuccess = false;
+      },
+
       'nextPage':function(){
         this.$router.push('/dodaj_wiadomosc/'+this.$route.params.market_id);
       },
@@ -83,12 +94,13 @@ import 'vue2-dropzone/dist/vue2Dropzone.css';
           this.isSuccess = true;
           this.success = message.success;
           this.formSubmitted = true;
-          this.$refs.myVueDropzone.disable()
+//          this.$refs.myVueDropzone.disable()
         }
         console.log('A file was successfully uploaded')
           this.isLoading = false;
       },
       'showError':function(file, message, xhr){
+          this.$refs.myVueDropzone.removeFile(file)
         this.isError = true;
         this.error = message;
         this.isLoading = false;
