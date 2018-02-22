@@ -82,8 +82,7 @@ class UploadedImagesViewSet(viewsets.ModelViewSet):
                 market=newest_market
             )
             return Response(dict(success="Przesłano poprawnie"))
-        new_number_of_market_images = Image.objects.filter(market=newest_market).count()
-        return Response(dict(error="Do marketu już dodano {} obrazki.".format(new_number_of_market_images)))
+        return Response(dict(error="Do marketu już dodano {} obrazki.".format(number_of_market_images)))
 
     def validate_image(self, image_fields):
         form = MarketImageSerializer(data=image_fields)
