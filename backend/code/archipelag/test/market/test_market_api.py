@@ -1,26 +1,10 @@
 from unittest.mock import patch
 
-from django.contrib.auth.models import User
-from django.test import TestCase
-from django.test import TransactionTestCase
 from rest_framework.test import APIClient
 from django.forms.models import model_to_dict
-from pytest import fixture
 
-from archipelag.ngo.models import NgoUser
 from archipelag.market.models import Market
-
-
-class BaseTestCase(TransactionTestCase):
-
-    def setUp(self):
-        email = 'jpueblo@example.com'
-        username = 'jpueblo'
-        password = 'password'
-        self.user = User.objects.create_user(
-            username, email, password)
-        self.ngo = NgoUser.objects.create(
-            user=self.user, organisation="org", coins=10)
+from archipelag.test.base_test_case import BaseTestCase
 
 
 class MarketTestCase(BaseTestCase):

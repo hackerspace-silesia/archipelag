@@ -1,5 +1,3 @@
-from uuid import UUID
-
 from archipelag.market.settings import POINTS_RULES
 from archipelag.market.models import Market
 from archipelag.market.models import Image
@@ -69,14 +67,12 @@ class UploadedImagesViewSet(viewsets.ModelViewSet):
                 create market or id of new market
         """
         image_fields = request.data
-        print(image_fields)
         market_id = image_fields.get("market_id")
-        newest_market = Market.objects.filter(id=market_id).first()
-        print(newest_market)
         try:
             self.validate_image(image_fields)
         except ValidationError as error:
-            return Response(dict(error=str(error)))
+            return Response(dict(error=error.detail))
+        newest_market = Market.objects.filter(id=market_id).first()
         if newest_market is None:
             return Response(dict(error="Prośba o dodanie obrazka do nieistniejącego marketu"))
         number_of_market_images = Image.objects.filter(market=newest_market).count()
@@ -90,11 +86,5 @@ class UploadedImagesViewSet(viewsets.ModelViewSet):
         return Response(dict(error="Do marketu już dodano {} obrazki.".format(new_number_of_market_images)))
 
     def validate_image(self, image_fields):
-        try:
-            val = UUID(image_fields["market_id"], version=4)
-        except ValueError as er:
-            # If it's a vaglue error, then the string
-            # is not a valid hex code for a UUID.
-            raise ValidationError(er)
         form = MarketImageSerializer(data=image_fields)
         return form.is_valid(raise_exception=True)

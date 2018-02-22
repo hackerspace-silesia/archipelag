@@ -19,7 +19,7 @@ class MarketSerializer(serializers.ModelSerializer):
 
 
 class MarketImageSerializer(serializers.ModelSerializer):
-    market_id = serializers.ReadOnlyField(source='market.id')
+    market_id = serializers.UUIDField(source='market.id', required=True)
     image_path = serializers.ImageField(required=True)
 
     class Meta:
