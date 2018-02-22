@@ -32,8 +32,7 @@ class MarketTestCase(BaseTestCase):
         self.client.force_authenticate(self.user)
 
     def test_create_market_when_not_jwt(self):
-        user = dict(title="123")
-        client = APIClient().post('/api/market/', user, format='json')
+        client = APIClient().post('/api/market/', format='json')
         assert client.json()["detail"] == 'Authentication credentials were not provided.'
 
 
