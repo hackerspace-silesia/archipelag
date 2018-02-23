@@ -5,12 +5,12 @@ from archipelag.market.models import Image
 
 class MarketSerializer(serializers.ModelSerializer):
     owner = serializers.ReadOnlyField(source='owner.organisation')
-    title = serializers.CharField(max_length=120, required=True)
-    date_starting = serializers.DateTimeField(required=False)
-    date_ending = serializers.DateTimeField(required=False)
-    date_created = serializers.DateTimeField(required=False)
-    date_modified = serializers.DateTimeField(required=False)
-    hashtag = serializers.CharField(max_length=15, required=False)
+    title = serializers.CharField(max_length=120, required=True, allow_null=True)
+    date_starting = serializers.DateTimeField(required=False, allow_null=True)
+    date_ending = serializers.DateTimeField(required=False, allow_null=True)
+    date_created = serializers.DateTimeField(required=False, allow_null=True)
+    date_modified = serializers.DateTimeField(required=False, allow_null=True)
+    hashtag = serializers.CharField(max_length=15, required=False, allow_null=True, allow_blank=True)
 
     class Meta:
         model = Market

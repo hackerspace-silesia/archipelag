@@ -8,6 +8,8 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework import viewsets
 from rest_framework.response import Response
 from rest_framework.exceptions import ValidationError
+from django.core.exceptions import ValidationError as DjangoValidatorException
+from uuid import UUID
 
 
 class MarketList(viewsets.ModelViewSet):
@@ -67,23 +69,30 @@ class UploadedImagesViewSet(viewsets.ModelViewSet):
                 create market or id of new market
         """
         image_fields = request.data
-        market_id = image_fields.get("market_id")
+        fields = dict(image_path=request.FILES.get("file"),
+                      market_id=image_fields.get("market_id"))
         try:
-            self.validate_image(image_fields)
+            self.validate_image(fields)
         except ValidationError as error:
             return Response(dict(error=error.detail))
-        newest_market = Market.objects.filter(id=market_id).first()
+        newest_market = Market.objects.filter(id=fields["market_id"]).first()
         if newest_market is None:
             return Response(dict(error="Prośba o dodanie obrazka do nieistniejącego marketu"))
         number_of_market_images = Image.objects.filter(market=newest_market).count()
         if number_of_market_images <= 3:
             Image.objects.create(
-                image_path=request.FILES["file"],
+                image_path=fields["image_path"],
                 market=newest_market
             )
             return Response(dict(success="Przesłano poprawnie"))
         return Response(dict(error="Do marketu już dodano {} obrazki.".format(number_of_market_images)))
 
     def validate_image(self, image_fields):
+        market_id=image_fields.get("market_id")
+        try:
+            if market_id:
+                UUID(market_id, version=4)
+        except (ValueError, AttributeError) as error:
+            raise ValidationError(dict(market_id=error))
         form = MarketImageSerializer(data=image_fields)
         return form.is_valid(raise_exception=True)
