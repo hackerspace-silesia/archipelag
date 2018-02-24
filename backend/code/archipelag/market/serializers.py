@@ -5,7 +5,7 @@ from archipelag.market.models import Image
 
 class MarketSerializer(serializers.ModelSerializer):
     owner = serializers.ReadOnlyField(source='owner.organisation')
-    title = serializers.CharField(max_length=120, required=True, allow_null=True)
+    title = serializers.CharField(max_length=120, required=True, allow_null=False)
     date_starting = serializers.DateTimeField(required=False, allow_null=True)
     date_ending = serializers.DateTimeField(required=False, allow_null=True)
     date_created = serializers.DateTimeField(required=False, allow_null=True)

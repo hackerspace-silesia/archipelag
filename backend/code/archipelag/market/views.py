@@ -32,7 +32,7 @@ class MarketList(viewsets.ModelViewSet):
         try:
             new_market = self.get_new_market(current_ngo, market_fields)
         except TypeError as error:
-            return Response(dict(error=str(error)))
+            return Response(dict(error=str(error)), status=400)
         current_ngo.subtract_coins(POINTS_RULES['add_own_market'])
         return Response(dict(success={'market_id': new_market.id}))
 
@@ -42,7 +42,7 @@ class MarketList(viewsets.ModelViewSet):
         try:
             self.validate_market(market_fields)
         except ValidationError as error:
-            return Response(dict(error=error.detail))
+            return Response(dict(error=error.detail), status=400)
         return None
 
     def validate_market(self, market_fields):
@@ -74,10 +74,10 @@ class UploadedImagesViewSet(viewsets.ModelViewSet):
         try:
             self.validate_image(fields)
         except ValidationError as error:
-            return Response(dict(error=error.detail))
+            return Response(dict(error=error.detail), status=400)
         newest_market = Market.objects.filter(id=fields["market_id"]).first()
         if newest_market is None:
-            return Response(dict(error="Prośba o dodanie obrazka do nieistniejącego marketu"))
+            return Response(dict(error="Prośba o dodanie obrazka do nieistniejącego marketu"), status=400)
         number_of_market_images = Image.objects.filter(market=newest_market).count()
         if number_of_market_images <= 3:
             Image.objects.create(
@@ -85,7 +85,7 @@ class UploadedImagesViewSet(viewsets.ModelViewSet):
                 market=newest_market
             )
             return Response(dict(success="Przesłano poprawnie"))
-        return Response(dict(error="Do marketu już dodano {} obrazki.".format(number_of_market_images)))
+        return Response(dict(error="Do marketu już dodano {} obrazki.".format(number_of_market_images)), status=400)
 
     def validate_image(self, image_fields):
         market_id=image_fields.get("market_id")

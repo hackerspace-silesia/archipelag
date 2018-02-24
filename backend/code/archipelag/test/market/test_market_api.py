@@ -35,33 +35,39 @@ class MarketTestCase(BaseTestCase):
 
     def test_correct_create_market(self):
         market = {'body': {'title': 'jjj', 'hashtag': 'hh', 'date_starting': '2018-02-20 23:50', 'date_ending': '2018-02-20 23:50'}}
-        market_list = self.client.post('/api/market/', market, format="json").json()
+        response = self.client.post('/api/market/', market, format="json")
 
-        assert "success" in market_list
+        assert "success" in response.json()
+        assert response.status_code == 200
 
     def test_create_market_when_user_hasnt_coins(self):
         self.ngo.coins = 0
         self.ngo.save()
         market = {'body': {'title': 'jjj'}}
-        market_list = self.client.post('/api/market/', market, format="json").json()
+        response = self.client.post('/api/market/', market, format="json")
 
-        assert market_list == {"error": "Za mało punktów."}
+        assert response.json() == {"error": "Za mało punktów."}
+        assert response.status_code == 200
 
     def test_create_market_when_missing_required_field(self):
         market = {'body': {}}
-        market_list = self.client.post('/api/market/', market, format="json").json()
+        response = self.client.post('/api/market/', market, format="json")
 
-        assert market_list == {"error": {'title': ['This field is required.']}}
+        assert response.json() == {"error": {'title': ['This field is required.']}}
+        assert response.status_code == 400
+
 
     def test_create_market_when_wrong_date(self):
         market = {'body': {'title': 'jjj', 'date_starting': 'yyu'}}
-        market_list = self.client.post('/api/market/', market, format="json").json()
+        response = self.client.post('/api/market/', market, format="json")
 
-        assert market_list == {"error": {'date_starting': ['Datetime has wrong format. Use one of these formats '
+        assert response.json() == {"error": {'date_starting': ['Datetime has wrong format. Use one of these formats '
                                          'instead: YYYY-MM-DDThh:mm[:ss[.uuuuuu]][+HH:MM|-HH:MM|Z].']}}
+        assert response.status_code == 400
 
     def test_create_market_when_not_know_field(self):
         market = {'body': {'title': 'jjj', 'hashtag': 'hh','h': '2018-02-20 23:50'}}
-        market_list = self.client.post('/api/market/', market, format="json").json()
+        response = self.client.post('/api/market/', market, format="json")
 
-        assert market_list == {"error": "'h' is an invalid keyword argument for this function"}
+        assert response.json() == {"error": "'h' is an invalid keyword argument for this function"}
+        assert response.status_code == 400
