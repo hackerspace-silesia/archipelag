@@ -14,7 +14,7 @@ from uuid import UUID
 
 class MarketList(viewsets.ModelViewSet):
     queryset = Market.objects.order_by('-date_created')
-    permission_classes = (IsAuthenticated,)
+    permission_classes = (IsAuthenticated, )
     serializer_class = MarketSerializer
 
     def create(self, request):
@@ -28,7 +28,7 @@ class MarketList(viewsets.ModelViewSet):
         current_ngo = request.user.ngouser
         errors = self.get_errors_during_validate(current_ngo, market_fields)
         if errors is not None:
-           return errors
+            return errors
         try:
             new_market = self.get_new_market(current_ngo, market_fields)
         except TypeError as error:
@@ -58,7 +58,7 @@ class MarketList(viewsets.ModelViewSet):
 
 class UploadedImagesViewSet(viewsets.ModelViewSet):
     queryset = Image.objects.all()
-    permission_classes = (IsAuthenticated,)
+    permission_classes = (IsAuthenticated, )
     serializer_class = MarketImageSerializer
 
     def create(self, request):
@@ -69,26 +69,34 @@ class UploadedImagesViewSet(viewsets.ModelViewSet):
                 create market or id of new market
         """
         image_fields = request.data
-        fields = dict(image_path=request.FILES.get("file"),
-                      market_id=image_fields.get("market_id"))
+        fields = dict(
+            image_path=request.FILES.get("file"),
+            market_id=image_fields.get("market_id"))
+        print(fields)
         try:
             self.validate_image(fields)
         except ValidationError as error:
             return Response(dict(error=error.detail), status=400)
         newest_market = Market.objects.filter(id=fields["market_id"]).first()
         if newest_market is None:
-            return Response(dict(error="Prośba o dodanie obrazka do nieistniejącego marketu"), status=400)
-        number_of_market_images = Image.objects.filter(market=newest_market).count()
+            return Response(
+                dict(
+                    error="Prośba o dodanie obrazka do nieistniejącego marketu"
+                ),
+                status=400)
+        number_of_market_images = Image.objects.filter(
+            market=newest_market).count()
         if number_of_market_images <= 3:
             Image.objects.create(
-                image_path=fields["image_path"],
-                market=newest_market
-            )
-            return Response(dict(success="Przesłano poprawnie"))
-        return Response(dict(error="Do marketu już dodano {} obrazki.".format(number_of_market_images)), status=400)
+                image_path=fields["image_path"], market=newest_market)
+            return Response(dict(message="Przesłano poprawnie"))
+        return Response(
+            dict(error="Do marketu już dodano {} obrazki.".format(
+                number_of_market_images)),
+            status=400)
 
     def validate_image(self, image_fields):
-        market_id=image_fields.get("market_id")
+        market_id = image_fields.get("market_id")
         try:
             if market_id:
                 UUID(market_id, version=4)

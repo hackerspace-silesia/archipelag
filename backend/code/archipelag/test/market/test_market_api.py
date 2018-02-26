@@ -17,14 +17,16 @@ class MarketTestCase(BaseTestCase):
 
     def test_create_market_when_not_jwt(self):
         client = APIClient().post('/api/market/', format='json')
-        assert client.json()["detail"] == 'Authentication credentials were not provided.'
-
+        assert client.json()[
+            "detail"] == 'Authentication credentials were not provided.'
 
     @patch('archipelag.market.views.MarketList.permission_classes', [])
     def test_get_market_ordered_by_newest(self):
         # given
-        expected_market = Market.objects.create(owner=self.ngo, title="1", hashtag="#1")
-        expected_market2 = Market.objects.create(owner=self.ngo, title="2", hashtag="#2")
+        expected_market = Market.objects.create(
+            owner=self.ngo, title="1", hashtag="#1")
+        expected_market2 = Market.objects.create(
+            owner=self.ngo, title="2", hashtag="#2")
         # when
         market_list = APIClient().get('/api/market/', format="json").json()
         # then
@@ -34,7 +36,14 @@ class MarketTestCase(BaseTestCase):
         assert market_list[1]["title"] == oldest_market['title']
 
     def test_correct_create_market(self):
-        market = {'body': {'title': 'jjj', 'hashtag': 'hh', 'date_starting': '2018-02-20 23:50', 'date_ending': '2018-02-20 23:50'}}
+        market = {
+            'body': {
+                'title': 'jjj',
+                'hashtag': 'hh',
+                'date_starting': '2018-02-20 23:50',
+                'date_ending': '2018-02-20 23:50'
+            }
+        }
         response = self.client.post('/api/market/', market, format="json")
 
         assert "success" in response.json()
@@ -53,21 +62,38 @@ class MarketTestCase(BaseTestCase):
         market = {'body': {}}
         response = self.client.post('/api/market/', market, format="json")
 
-        assert response.json() == {"error": {'title': ['This field is required.']}}
+        assert response.json() == {
+            "error": {
+                'title': ['This field is required.']
+            }
+        }
         assert response.status_code == 400
-
 
     def test_create_market_when_wrong_date(self):
         market = {'body': {'title': 'jjj', 'date_starting': 'yyu'}}
         response = self.client.post('/api/market/', market, format="json")
 
-        assert response.json() == {"error": {'date_starting': ['Datetime has wrong format. Use one of these formats '
-                                         'instead: YYYY-MM-DDThh:mm[:ss[.uuuuuu]][+HH:MM|-HH:MM|Z].']}}
+        assert response.json() == {
+            "error": {
+                'date_starting': [
+                    'Datetime has wrong format. Use one of these formats '
+                    'instead: YYYY-MM-DDThh:mm[:ss[.uuuuuu]][+HH:MM|-HH:MM|Z].'
+                ]
+            }
+        }
         assert response.status_code == 400
 
     def test_create_market_when_not_know_field(self):
-        market = {'body': {'title': 'jjj', 'hashtag': 'hh','h': '2018-02-20 23:50'}}
+        market = {
+            'body': {
+                'title': 'jjj',
+                'hashtag': 'hh',
+                'h': '2018-02-20 23:50'
+            }
+        }
         response = self.client.post('/api/market/', market, format="json")
 
-        assert response.json() == {"error": "'h' is an invalid keyword argument for this function"}
+        assert response.json() == {
+            "error": "'h' is an invalid keyword argument for this function"
+        }
         assert response.status_code == 400
