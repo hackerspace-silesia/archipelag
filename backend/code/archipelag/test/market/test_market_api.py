@@ -67,7 +67,7 @@ class TestMarketApi(BaseTestCase):
         response = client.post('/api/market/', market, format="json")
 
         assert response.json() == {"error": "Za mało punktów."}
-        assert response.status_code == 200
+        assert response.status_code == 400
 
     def test_create_market_when_missing_required_field(self, auth_client):
         client, ngo = auth_client

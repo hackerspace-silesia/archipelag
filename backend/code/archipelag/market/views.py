@@ -1,15 +1,16 @@
-from archipelag.market.settings import POINTS_RULES
-from archipelag.market.models import Market
-from archipelag.market.models import Image
-from archipelag.market.serializers import MarketSerializer
-from archipelag.market.serializers import MarketImageSerializer
+from uuid import UUID
 
 from rest_framework.permissions import IsAuthenticated
 from rest_framework import viewsets
 from rest_framework.response import Response
 from rest_framework.exceptions import ValidationError
-from django.core.exceptions import ValidationError as DjangoValidatorException
-from uuid import UUID
+
+from archipelag.market.settings import POINTS_RULES
+from archipelag.market.models import Market
+from archipelag.market.models import Image
+from archipelag.market.serializers import MarketSerializer
+from archipelag.market.serializers import MarketImageSerializer
+from archipelag.app.utils import get_proper_format_for_valid_exception
 
 
 class MarketList(viewsets.ModelViewSet):
@@ -26,9 +27,11 @@ class MarketList(viewsets.ModelViewSet):
         """
         market_fields = request.data['body']
         current_ngo = request.user.ngouser
-        errors = self.get_errors_during_validate(current_ngo, market_fields)
-        if errors is not None:
-            return errors
+        try:
+            self.validate(current_ngo, market_fields)
+        except ValidationError as error:
+            error = get_proper_format_for_valid_exception(error)
+            return Response(dict(error=error), status=400)
         try:
             new_market = self.get_new_market(current_ngo, market_fields)
         except TypeError as error:
@@ -36,14 +39,10 @@ class MarketList(viewsets.ModelViewSet):
         current_ngo.subtract_coins(POINTS_RULES['add_own_market'])
         return Response(dict(success={'market_id': new_market.id}))
 
-    def get_errors_during_validate(self, current_ngo, market_fields):
+    def validate(self, current_ngo, market_fields):
         if not current_ngo.is_user_can_add_market():
-            return Response(dict(error="Za mało punktów."))
-        try:
-            self.validate_market(market_fields)
-        except ValidationError as error:
-            return Response(dict(error=error.detail), status=400)
-        return None
+            raise ValidationError("Za mało punktów.")
+        return self.validate_market(market_fields)
 
     def validate_market(self, market_fields):
         form = MarketSerializer(data=market_fields)
@@ -74,25 +73,23 @@ class UploadedImagesViewSet(viewsets.ModelViewSet):
             market_id=image_fields.get("market_id"))
         try:
             self.validate_image(fields)
+            newest_market = Market.objects.filter(id=fields["market_id"]).first()
+            self.validate_market(newest_market)
         except ValidationError as error:
-            return Response(dict(error=error.detail), status=400)
-        newest_market = Market.objects.filter(id=fields["market_id"]).first()
+            error = get_proper_format_for_valid_exception(error)
+            return Response(dict(error=error), status=400)
+        Image.objects.create(
+                image_path=fields["image_path"], market=newest_market)
+        return Response(dict(message="Przesłano poprawnie"))
+
+    def validate_market(self, newest_market):
         if newest_market is None:
-            return Response(
-                dict(
-                    error="Prośba o dodanie obrazka do nieistniejącego marketu"
-                ),
-                status=400)
+            raise ValidationError("Prośba o dodanie obrazka do nieistniejącego marketu")
         number_of_market_images = Image.objects.filter(
             market=newest_market).count()
-        if number_of_market_images <= 3:
-            Image.objects.create(
-                image_path=fields["image_path"], market=newest_market)
-            return Response(dict(message="Przesłano poprawnie"))
-        return Response(
-            dict(error="Do marketu już dodano {} obrazki.".format(
-                number_of_market_images)),
-            status=400)
+        if number_of_market_images >= 3:
+            error = "Do marketu już dodano {} obrazki.".format(number_of_market_images)
+            raise ValidationError(error)
 
     def validate_image(self, image_fields):
         market_id = image_fields.get("market_id")
