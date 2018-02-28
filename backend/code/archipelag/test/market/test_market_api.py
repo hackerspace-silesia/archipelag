@@ -45,6 +45,20 @@ class TestMarketApi(BaseTestCase):
         assert "success" in response.json()
         assert response.status_code == 200
 
+    def test_user_substracting_coins_on_correct_add(self, auth_client):
+        market = {
+            'body': {
+                'title': 'jjj',
+                'hashtag': 'hh',
+                'date_starting': '2018-02-20 23:50',
+                'date_ending': '2018-02-20 23:50'
+            }
+        }
+        client, ngo = auth_client
+        coins_before_add_market = ngo.coins
+        client.post('/api/market/', market, format="json")
+        assert ngo.coins == coins_before_add_market-3
+
     def test_create_market_when_user_hasnt_coins(self, auth_client):
         client, ngo = auth_client
         ngo.coins = 2.9
