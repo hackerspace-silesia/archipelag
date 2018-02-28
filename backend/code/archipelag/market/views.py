@@ -8,11 +8,13 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework import viewsets
 from rest_framework.response import Response
 from rest_framework.exceptions import ValidationError
+from django.core.exceptions import ValidationError as DjangoValidatorException
+from uuid import UUID
 
 
 class MarketList(viewsets.ModelViewSet):
     queryset = Market.objects.order_by('-date_created')
-    permission_classes = (IsAuthenticated,)
+    permission_classes = (IsAuthenticated, )
     serializer_class = MarketSerializer
 
     def create(self, request):
@@ -26,11 +28,11 @@ class MarketList(viewsets.ModelViewSet):
         current_ngo = request.user.ngouser
         errors = self.get_errors_during_validate(current_ngo, market_fields)
         if errors is not None:
-           return errors
+            return errors
         try:
             new_market = self.get_new_market(current_ngo, market_fields)
         except TypeError as error:
-            return Response(dict(error=str(error)))
+            return Response(dict(error=str(error)), status=400)
         current_ngo.subtract_coins(POINTS_RULES['add_own_market'])
         return Response(dict(success={'market_id': new_market.id}))
 
@@ -40,7 +42,7 @@ class MarketList(viewsets.ModelViewSet):
         try:
             self.validate_market(market_fields)
         except ValidationError as error:
-            return Response(dict(error=error.detail))
+            return Response(dict(error=error.detail), status=400)
         return None
 
     def validate_market(self, market_fields):
@@ -56,7 +58,7 @@ class MarketList(viewsets.ModelViewSet):
 
 class UploadedImagesViewSet(viewsets.ModelViewSet):
     queryset = Image.objects.all()
-    permission_classes = (IsAuthenticated,)
+    permission_classes = (IsAuthenticated, )
     serializer_class = MarketImageSerializer
 
     def create(self, request):
@@ -67,16 +69,37 @@ class UploadedImagesViewSet(viewsets.ModelViewSet):
                 create market or id of new market
         """
         image_fields = request.data
-        market_id = image_fields.get("market_id")
-        newest_market = Market.objects.filter(id=market_id).first()
+        fields = dict(
+            image_path=request.FILES.get("file"),
+            market_id=image_fields.get("market_id"))
+        try:
+            self.validate_image(fields)
+        except ValidationError as error:
+            return Response(dict(error=error.detail), status=400)
+        newest_market = Market.objects.filter(id=fields["market_id"]).first()
         if newest_market is None:
-            return Response(dict(error="Prośba o dodanie obrazka do nieistniejącego marketu"))
-        number_of_market_images = Image.objects.filter(market=newest_market).count()
+            return Response(
+                dict(
+                    error="Prośba o dodanie obrazka do nieistniejącego marketu"
+                ),
+                status=400)
+        number_of_market_images = Image.objects.filter(
+            market=newest_market).count()
         if number_of_market_images <= 3:
             Image.objects.create(
-                image_path=request.FILES["file"],
-                market=newest_market
-            )
-            return Response(dict(success="Przesłano poprawnie"))
-        new_number_of_market_images = Image.objects.filter(market=newest_market).count()
-        return Response(dict(error="Do marketu już dodano {} obrazków.".format(new_number_of_market_images)))
+                image_path=fields["image_path"], market=newest_market)
+            return Response(dict(message="Przesłano poprawnie"))
+        return Response(
+            dict(error="Do marketu już dodano {} obrazki.".format(
+                number_of_market_images)),
+            status=400)
+
+    def validate_image(self, image_fields):
+        market_id = image_fields.get("market_id")
+        try:
+            if market_id:
+                UUID(market_id, version=4)
+        except (ValueError, AttributeError) as error:
+            raise ValidationError(dict(market_id=error))
+        form = MarketImageSerializer(data=image_fields)
+        return form.is_valid(raise_exception=True)
