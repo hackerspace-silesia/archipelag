@@ -7,13 +7,7 @@ from archipelag.market.models import Market
 from archipelag.test.base_test_case import BaseTestCase
 
 
-class MarketTestCase(BaseTestCase):
-    reset_sequences = True
-
-    def setUp(self):
-        super(MarketTestCase, self).setUp()
-        self.client = APIClient()
-        self.client.force_authenticate(self.user)
+class TestMarketApi(BaseTestCase):
 
     def test_create_market_when_not_jwt(self):
         client = APIClient().post('/api/market/', format='json')
@@ -21,12 +15,13 @@ class MarketTestCase(BaseTestCase):
             "detail"] == 'Authentication credentials were not provided.'
 
     @patch('archipelag.market.views.MarketList.permission_classes', [])
-    def test_get_market_ordered_by_newest(self):
+    def test_get_market_ordered_by_newest(self, user_with_ngo):
         # given
+        user, ngo = user_with_ngo
         expected_market = Market.objects.create(
-            owner=self.ngo, title="1", hashtag="#1")
+            owner=ngo, title="1", hashtag="#1")
         expected_market2 = Market.objects.create(
-            owner=self.ngo, title="2", hashtag="#2")
+            owner=ngo, title="2", hashtag="#2")
         # when
         market_list = APIClient().get('/api/market/', format="json").json()
         # then
@@ -35,7 +30,7 @@ class MarketTestCase(BaseTestCase):
         assert market_list[0]["title"] == newest_market['title']
         assert market_list[1]["title"] == oldest_market['title']
 
-    def test_correct_create_market(self):
+    def test_correct_create_market(self, auth_client):
         market = {
             'body': {
                 'title': 'jjj',
@@ -44,23 +39,26 @@ class MarketTestCase(BaseTestCase):
                 'date_ending': '2018-02-20 23:50'
             }
         }
-        response = self.client.post('/api/market/', market, format="json")
+        client, ngo = auth_client
+        response = client.post('/api/market/', market, format="json")
 
         assert "success" in response.json()
         assert response.status_code == 200
 
-    def test_create_market_when_user_hasnt_coins(self):
-        self.ngo.coins = 0
-        self.ngo.save()
+    def test_create_market_when_user_hasnt_coins(self, auth_client):
+        client, ngo = auth_client
+        ngo.coins = 2.9
+        ngo.save()
         market = {'body': {'title': 'jjj'}}
-        response = self.client.post('/api/market/', market, format="json")
+        response = client.post('/api/market/', market, format="json")
 
         assert response.json() == {"error": "Za mało punktów."}
         assert response.status_code == 200
 
-    def test_create_market_when_missing_required_field(self):
+    def test_create_market_when_missing_required_field(self, auth_client):
+        client, ngo = auth_client
         market = {'body': {}}
-        response = self.client.post('/api/market/', market, format="json")
+        response = client.post('/api/market/', market, format="json")
 
         assert response.json() == {
             "error": {
@@ -69,9 +67,10 @@ class MarketTestCase(BaseTestCase):
         }
         assert response.status_code == 400
 
-    def test_create_market_when_wrong_date(self):
+    def test_create_market_when_wrong_date(self, auth_client):
+        client, ngo = auth_client
         market = {'body': {'title': 'jjj', 'date_starting': 'yyu'}}
-        response = self.client.post('/api/market/', market, format="json")
+        response = client.post('/api/market/', market, format="json")
 
         assert response.json() == {
             "error": {
@@ -83,7 +82,8 @@ class MarketTestCase(BaseTestCase):
         }
         assert response.status_code == 400
 
-    def test_create_market_when_not_know_field(self):
+    def test_create_market_when_not_know_field(self, auth_client):
+        client, ngo = auth_client
         market = {
             'body': {
                 'title': 'jjj',
@@ -91,7 +91,7 @@ class MarketTestCase(BaseTestCase):
                 'h': '2018-02-20 23:50'
             }
         }
-        response = self.client.post('/api/market/', market, format="json")
+        response = client.post('/api/market/', market, format="json")
 
         assert response.json() == {
             "error": "'h' is an invalid keyword argument for this function"

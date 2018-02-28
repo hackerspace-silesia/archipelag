@@ -72,7 +72,6 @@ class UploadedImagesViewSet(viewsets.ModelViewSet):
         fields = dict(
             image_path=request.FILES.get("file"),
             market_id=image_fields.get("market_id"))
-        print(fields)
         try:
             self.validate_image(fields)
         except ValidationError as error:
