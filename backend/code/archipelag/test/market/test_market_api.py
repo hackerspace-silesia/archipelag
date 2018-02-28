@@ -12,7 +12,7 @@ class TestMarketApi(BaseTestCase):
     def test_create_market_when_not_jwt(self):
         client = APIClient().post('/api/market/', format='json')
         assert client.json()[
-            "detail"] == 'Authentication credentials were not provided.'
+            "detail"] == 'Nie podano danych uwierzytelniających.'
 
     @patch('archipelag.market.views.MarketList.permission_classes', [])
     def test_get_market_ordered_by_newest(self, user_with_ngo):
@@ -76,7 +76,7 @@ class TestMarketApi(BaseTestCase):
 
         assert response.json() == {
             "error": {
-                'title': ['This field is required.']
+                'title': ['To pole jest wymagane.']
             }
         }
         assert response.status_code == 400
@@ -88,10 +88,9 @@ class TestMarketApi(BaseTestCase):
 
         assert response.json() == {
             "error": {
-                'date_starting': [
-                    'Datetime has wrong format. Use one of these formats '
-                    'instead: YYYY-MM-DDThh:mm[:ss[.uuuuuu]][+HH:MM|-HH:MM|Z].'
-                ]
+                'date_starting': ['Wartość daty z czasem ma zły format. '
+                                  'Użyj jednego z dostępnych formatów: '
+                                  'YYYY-MM-DDThh:mm[:ss[.uuuuuu]][+HH:MM|-HH:MM|Z].']
             }
         }
         assert response.status_code == 400
