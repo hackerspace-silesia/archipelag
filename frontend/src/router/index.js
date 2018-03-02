@@ -3,6 +3,7 @@ import Router from 'vue-router'
 import Market from '@/components/market/market'
 import AddMessages from '@/components/new_message/add_messages'
 import AddMarketImages from '@/components/new_market_image/add_market_image'
+import EditMarket from '@/components/edit_market/panel'
 import AddMarket from '@/components/add_market'
 import LogIn from '@/components/login'
 import SignUp from '@/components/signUp/signUp'
@@ -53,6 +54,12 @@ const router = new Router({
             path: '/dodaj_obrazek/:market_id',
             name: 'AddMarketImages',
             component: AddMarketImages,
+            meta: { requiresAuth: true }
+        },
+        {
+            path: '/edytuj_market/:market_id',
+            name: 'EditMarket',
+            component: EditMarket,
             meta: { requiresAuth: true }
         },
         {

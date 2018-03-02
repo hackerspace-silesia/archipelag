@@ -56,10 +56,17 @@
         </b-modal>
    </template>
        <template slot="id" scope="row">
+        <b-button size="lg"  v-on:click="goToEditPage(row.item.id)"
+                  variant="success"
+                  v-if="isOwner(row.item.owner)">
+                   Edytuj
+        </b-button>
         <b-button size="lg" @click.stop="row.toggleDetails"
                   variant="success"
-                  v-if="get_market_messages(row.item.id).length > 0">
+                  isOwner
+                  v-else="get_market_messages(row.item.id).length > 0">
           {{ row.detailsShowing ? 'Schowaj' : 'Pokaż' }} udostępnianie
+
         </b-button>
          <div v-else>
         Brak wiadomości
@@ -105,7 +112,6 @@
 <script>
 import axios from 'axios';
 import moment from 'moment';
-
 
 const items = [
 ]
@@ -157,6 +163,10 @@ export default {
     }
   },
   methods: {
+      isOwner(market_owner_name){
+          name = localStorage.getItem('ngo_name');
+          return name == market_owner_name;
+      },
     openInfoModal (message, row, button) {
       this.modalInfo.title = `Serwis: ${message["type"]}`;
       const content = message["content"]+" "+row.hashtag;
@@ -174,6 +184,11 @@ export default {
       // Trigger pagination to update the number of buttons/pages due to filtering
       this.totalRows = filteredItems.length
       this.currentPage = 1
+    },
+    goToEditPage(id_market){
+      const router = this.$router;
+      const editPanelUrl = "/edytuj_market/"+id_market
+        router.push(editPanelUrl);
     },
     getHumanDate : function (date) {
 
@@ -206,6 +221,7 @@ export default {
     .then(response =>{
     // JSON responses are automatically parsed.
     this.items= response.data;
+    console.log(this.items)
     this.isLoading = false;
     }).catch(e => {
         console.log(e)
