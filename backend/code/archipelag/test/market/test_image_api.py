@@ -11,7 +11,7 @@ class TestImage(BaseTestCase):
 
     def test_create_image_when_not_jwt(self):
         client = APIClient().post('/api/images/', format='json')
-        assert client.json()["detail"] == 'Authentication credentials were not provided.'
+        assert client.json()["detail"] == 'Nie podano danych uwierzytelniających.'
 
     def test_create_image_when_wrong_market_id(self, auth_client):
         client, ngo = auth_client
@@ -46,7 +46,7 @@ class TestImage(BaseTestCase):
             follow_redirects=True,
             data=data,
         )
-        assert response.json()["error"] == dict(image_path=['This field may not be null.'])
+        assert response.json()["error"] == dict(image_path=['Pole nie może mieć wartości null.'])
         assert response.status_code == 400
 
     def test_create_image_when_when_missing_id_and_file(self, auth_client):
@@ -59,8 +59,8 @@ class TestImage(BaseTestCase):
             data=data,
         )
         assert response.json()["error"] == dict(
-            market_id=['This field may not be null.'],
-            image_path=['This field may not be null.'])
+            market_id=['Pole nie może mieć wartości null.'],
+            image_path=['Pole nie może mieć wartości null.'])
         assert response.status_code == 400
 
     def test_create_image_when_when_not_valid(self, auth_client):
@@ -72,7 +72,7 @@ class TestImage(BaseTestCase):
             follow_redirects=True,
             data=data,
         )
-        assert response.json()["error"] == dict(image_path=['This field may not be null.'])
+        assert response.json()["error"] == dict(image_path=['Pole nie może mieć wartości null.'])
         assert response.status_code == 400
 
     @patch('archipelag.market.views.Image.objects.create')
