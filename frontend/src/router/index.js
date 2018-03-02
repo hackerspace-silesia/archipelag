@@ -1,10 +1,12 @@
 import Vue from 'vue'
 import Router from 'vue-router'
+
 import Market from '@/components/market/market'
-import AddMessages from '@/components/new_message/add_messages'
-import AddMarketImages from '@/components/new_market_image/add_market_image'
-import EditMarket from '@/components/edit_market/panel'
-import AddMarket from '@/components/add_market'
+import AddMessages from '@/components/services_messages/add_messages'
+import AddMarketImages from '@/components/market/add/add_market_image'
+import EditMarket from '@/components/market/edit/panel'
+import AddMarket from '@/components/market/add/add_market'
+
 import LogIn from '@/components/login'
 import SignUp from '@/components/signUp/signUp'
 import NotFound from '@/components/notFound'

@@ -130,7 +130,7 @@ export default {
         { key: 'date_ending', label: 'Zakończenie', sortable: true, formatter: 'getHumanDate'},
         { key: 'date_modified', label: 'Data modyfikacji', sortable: true, formatter: 'getHumanDate'},
         { key: 'hashtag', label: 'hashtag', sortable: true, },
-        { key: "id", label:"Akcje"}
+        { key: "id", label:"Akcje", sortable: true, }
       ],
       currentPage: 1,
       perPage: 10,
