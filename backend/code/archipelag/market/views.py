@@ -87,7 +87,7 @@ class UploadedImagesViewSet(viewsets.ModelViewSet):
             raise ValidationError("Prośba o dodanie obrazka do nieistniejącego marketu")
         number_of_market_images = Image.objects.filter(
             market=newest_market).count()
-        if number_of_market_images >= 3:
+        if number_of_market_images > 3:
             error = "Do marketu już dodano {} obrazki.".format(number_of_market_images)
             raise ValidationError(error)
 

@@ -92,7 +92,7 @@ import 'vue2-dropzone/dist/vue2Dropzone.css';
         }else{
           this.isError = false
           this.isSuccess = true;
-          this.success = message.success;
+          this.success = message.message;
           this.formSubmitted = true;
 //          this.$refs.myVueDropzone.disable()
         }
