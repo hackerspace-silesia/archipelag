@@ -31,18 +31,25 @@ class MessagesList(viewsets.ModelViewSet):
     def create(self, request):
         data = request.data['body']
         try:
-            market = Market.objects.get(id=data['market'])
+            market_id = data['market']
+            market = Market.objects.get(id=market_id)
             message_type = MessageType.objects.get(id=data['type'])
         except Exception as ex:
             print(ex)
             return Response(dict(error='Problem z integralnością danych. Skontaktuj się z administratorem.'))
+        existedMessageType = Message.objects.filter(market_id=market_id, type=message_type)
+        if existedMessageType:
+            existedMessageType.update(content=data['content'])
+            service_name = message_type.service
+            return Response(dict(message="Zmieniono zawartość wiadomości dla {}.".format(service_name)))
         try:
+
             new_message = Message.objects.create(market=market, type=message_type, content=data['content'])
         except Exception as ex:
             print(ex)
             return Response(dict(error="Błąd z bazą danych. Skontaktuj się z administratorem."))
         add_coins_if_rules_allow(request.user.ngouser, data['market'])
-        return Response(dict(success=get_statement_for_user(new_message)))
+        return Response(dict(message=get_statement_for_user(new_message)))
 
 
 class MessagesTypesList(viewsets.ReadOnlyModelViewSet):

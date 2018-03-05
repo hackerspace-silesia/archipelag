@@ -187,7 +187,7 @@ export default {
     },
     goToEditPage(id_market){
       const router = this.$router;
-      const editPanelUrl = "/edytuj_market/"+id_market
+      const editPanelUrl = "/panel_edycji/"+id_market
         router.push(editPanelUrl);
     },
     getHumanDate : function (date) {
@@ -201,7 +201,6 @@ export default {
      this.isLoading = true;
      axios.defaults.headers.common['Authorization'] = `JWT ${localStorage.getItem('jwtToken')}`;
      axios.get(process.env.BACKEND+"message/?format=json")
-
     .then(response =>{
     // JSON responses are automatically parsed.
     this.messages= response.data;
@@ -217,17 +216,16 @@ export default {
           this.isLoading = true;
           axios.defaults.headers.common['Authorization'] = `JWT ${localStorage.getItem('jwtToken')}`;
           axios.get(process.env.BACKEND+"market/?format=json")
-
-    .then(response =>{
-    // JSON responses are automatically parsed.
-    this.items= response.data;
-    console.log(this.items)
-    this.isLoading = false;
-    }).catch(e => {
-        console.log(e)
-      console.log(e);
-      this.isLoading = false;
-    })
+            .then(response =>{
+            // JSON responses are automatically parsed.
+            this.items= response.data;
+            console.log(this.items)
+            this.isLoading = false;
+            }).catch(e => {
+                console.log(e)
+              console.log(e);
+              this.isLoading = false;
+            })
     },
     get_logs:function(market_id){
       this.isLoading = true;

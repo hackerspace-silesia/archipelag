@@ -3,8 +3,10 @@ import Router from 'vue-router'
 
 import Market from '@/components/market/market'
 import AddMessages from '@/components/services_messages/add_messages'
+import EditMessagesServices from '@/components/services_messages/edit_messages'
 import AddMarketImages from '@/components/market/add/add_market_image'
-import EditMarket from '@/components/market/edit/panel'
+import EditPanel from '@/components/market/edit/panel'
+import EditBasicMarket from '@/components/market/edit/basic_market'
 import AddMarket from '@/components/market/add/add_market'
 
 import LogIn from '@/components/login'
@@ -59,9 +61,21 @@ const router = new Router({
             meta: { requiresAuth: true }
         },
         {
+            path: '/panel_edycji/:market_id',
+            name: 'EditPanel',
+            component: EditPanel,
+            meta: { requiresAuth: true }
+        },
+        {
             path: '/edytuj_market/:market_id',
-            name: 'EditMarket',
-            component: EditMarket,
+            name: 'EditBasicMarket',
+            component: EditBasicMarket,
+            meta: { requiresAuth: true }
+        },
+        {
+            path: '/edytuj_wiadomosci/:market_id',
+            name: 'EditMessagesServices',
+            component: EditMessagesServices,
             meta: { requiresAuth: true }
         },
         {

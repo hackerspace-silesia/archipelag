@@ -1,9 +1,7 @@
 <template>
   <div role="tablist">
     <hr>
-    <h2>Dodaj wydarzenie</h2>
-        <h3>3/3</h3>
-    <h4>Wybierz serwis na który ma być udostępniona wiadomość</h4>
+    <h2>Edytuj wiadomości</h2>
     <hr>
     <b-alert variant="success"
        dismissible
@@ -38,10 +36,18 @@
     name:'AddMessages',
 
     created(){
-       axios.defaults.headers.common['Authorization'] = `JWT ${localStorage.getItem('jwtToken')}`;
+      axios.defaults.headers.common['Authorization'] = `JWT ${localStorage.getItem('jwtToken')}`;
       axios.get(process.env.BACKEND+`messages_types/`)
       .then(response => {
-        this.types = response.data;
+      this.types = response.data;
+        axios.defaults.headers.common['Authorization'] = `JWT ${localStorage.getItem('jwtToken')}`;
+        axios.get(process.env.BACKEND+"message/?market_id="+this.$route.params.market_id)
+        .then(response => {
+          console.log(response)
+          })
+        .catch(e => {
+            console.log(e)
+          })
       })
       .catch(e => {
         console.log(e)
