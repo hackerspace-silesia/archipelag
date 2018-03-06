@@ -15,7 +15,8 @@
                        <b-progress-bar :value="warning" variant="danger"></b-progress-bar>
                      </b-progress>
                         <b-alert show class="col" :variant="getVariant()"> limit znaków to {{service.char_restriction}} </b-alert>
-    <button class="btn btn-primary" type="submit" @click.prevent="getFormValues(message, service.id, service.char_restriction)"><i class="glyphicon glyphicon-ok"></i> Zapisz </button>
+    <button class="btn btn-primary" type="submit" @click.prevent="getFormValues(message, service.id, service.char_restriction)">
+     Zapisz </button>
 
 </b-form-group>
 </form>
@@ -25,8 +26,12 @@
 <script type="text/javascript">
 
   export default {
-    props:['service', 'getFormValues'],
-
+      created(){
+        if("content" in this.service){
+            this.message = this.service.content;
+        }
+      },
+    props:['service', 'getFormValues', ],
     data: function (){
         return {
           message: "",

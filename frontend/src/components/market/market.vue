@@ -64,8 +64,7 @@
         <b-button size="lg" @click.stop="row.toggleDetails"
                   variant="success"
                   isOwner
-                  v-else="get_market_messages(row.item.id).length > 0">
-          {{ row.detailsShowing ? 'Schowaj' : 'Pokaż' }} udostępnianie
+                  v-else="get_market_messages(row.item.id).length > 0">udostępnij
 
         </b-button>
          <div v-else>
@@ -130,7 +129,7 @@ export default {
         { key: 'date_ending', label: 'Zakończenie', sortable: true, formatter: 'getHumanDate'},
         { key: 'date_modified', label: 'Data modyfikacji', sortable: true, formatter: 'getHumanDate'},
         { key: 'hashtag', label: 'hashtag', sortable: true, },
-        { key: "id", label:"Akcje", sortable: true, }
+        { key: "id", label:"Akcje" }
       ],
       currentPage: 1,
       perPage: 10,
