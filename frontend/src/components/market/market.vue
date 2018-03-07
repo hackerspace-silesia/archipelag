@@ -64,8 +64,8 @@
         <b-button size="lg" @click.stop="row.toggleDetails"
                   variant="success"
                   isOwner
-                  v-else="get_market_messages(row.item.id).length > 0">udostępnij
-
+                  v-else="get_market_messages(row.item.id).length > 0">
+                   {{ row.detailsShowing ? 'Schowaj' : 'Udostępnij' }}
         </b-button>
          <div v-else>
         Brak wiadomości

@@ -3,7 +3,7 @@ from archipelag.share_log.models import ShareLog
 
 
 class ShareLogSerializer(serializers.ModelSerializer):
-    owner_name = serializers.ReadOnlyField(source='owner.name')
+    owner_name = serializers.ReadOnlyField(source='owner.organisation')
     owner_id = serializers.ReadOnlyField(source='owner.id')
     message = serializers.ReadOnlyField(source='message.type.service')
 
