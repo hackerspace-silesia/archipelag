@@ -1,5 +1,6 @@
 from unittest.mock import patch
 from uuid import uuid4
+import os
 
 from pytest import fixture
 from rest_framework.test import APIClient
@@ -77,19 +78,20 @@ class TestImage(BaseTestCase):
         assert response.json()["error"] == dict(image_path=['Pole nie może mieć wartości null.'])
         assert response.status_code == 400
 
-    @patch('archipelag.market.views.Image.objects.create')
-    def test_create_image_correctly(self, mock_create, auth_client):
+    def test_create_image_correctly(self, auth_client):
         client, ngo = auth_client
         images_market = Market.objects.create(
             owner=ngo, title="1", hashtag="#1")
 
-        with open("test/market/socek.png", 'rb') as file:
-            data = dict(market_id=images_market.id, file=file)
+        with open("test/market/socek.png", 'rb') as image:
+            data = dict(market_id=images_market.id, file=image)
             response = client.post(
                 '/api/images/',
                 data,
                 format='multipart',
             )
+
+        os.remove(os.getcwd()+"/market/images/socek.png")
         assert response.json() == dict(message='Przesłano poprawnie')
         assert response.status_code == 200
 
@@ -163,7 +165,7 @@ class TestGetImage(BaseTestCase):
         market, expected_image = market_with_image
 
         market2 = Market.objects.create(owner=ngo, title="life is life", hashtag="#1")
-        image2 = Image.objects.create(market=market2, image_path="yolo")
+        Image.objects.create(market=market2, image_path="yolo")
 
         response = client.get('/api/images/?market_id={}'.format(market.id))
         returned_images = response.json()

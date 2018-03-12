@@ -68,14 +68,35 @@ class UploadedImagesViewSet(viewsets.ModelViewSet):
 
     def list(self, request):
         market_id = request.query_params.get('market_id', None)
-        errors = self.get_validation_error(market_id)
+        errors = self.validate_get_error(market_id)
         if errors:
             return errors
         queryset = Image.objects.filter(market=market_id)
         markets_list = MarketImageSerializer(queryset, many=True).data
         return Response(markets_list, status=200)
 
-    def get_validation_error(self, market_id):
+    def create(self, request):
+        """
+        Create new market if user has enough number of coins.
+
+        :return information about reason why he can't
+                create market or id of new market
+        """
+        market_id = request.data.get("market_id")
+        fields = dict(
+            image_path=request.FILES.get("file"),
+            market_id=market_id)
+        try:
+            self.validate_image(fields)
+            market = self.validate_market(fields["market_id"])
+        except ValidationError as error:
+            error = get_proper_format_for_valid_exception(error)
+            return Response(dict(error=error), status=400)
+        Image.objects.create(
+                image_path=fields["image_path"], market=market)
+        return Response(dict(message="Przesłano poprawnie"))
+
+    def validate_get_error(self, market_id):
         if market_id is None:
             return Response(dict(error="Brakuje marketu dla którego można by pobrać obrazki"), status=422)
         elif not self.validate_uuid4(market_id):
@@ -95,36 +116,17 @@ class UploadedImagesViewSet(viewsets.ModelViewSet):
             return False
         return True
 
-    def create(self, request):
-        """
-        Create new market if user has enough number of coins.
 
-        :return information about reason why he can't
-                create market or id of new market
-        """
-        image_fields = request.data
-        fields = dict(
-            image_path=request.FILES.get("file"),
-            market_id=image_fields.get("market_id"))
-        try:
-            self.validate_image(fields)
-            newest_market = Market.objects.filter(id=fields["market_id"]).first()
-            self.validate_market(newest_market)
-        except ValidationError as error:
-            error = get_proper_format_for_valid_exception(error)
-            return Response(dict(error=error), status=400)
-        Image.objects.create(
-                image_path=fields["image_path"], market=newest_market)
-        return Response(dict(message="Przesłano poprawnie"))
-
-    def validate_market(self, newest_market):
-        if newest_market is None:
+    def validate_market(self, market_id):
+        market = Market.objects.filter(id=market_id).first()
+        if market is None:
             raise ValidationError("Prośba o dodanie obrazka do nieistniejącego marketu")
         number_of_market_images = Image.objects.filter(
-            market=newest_market).count()
+            market=market).count()
         if number_of_market_images > 3:
             error = "Do marketu już dodano {} obrazki.".format(number_of_market_images)
             raise ValidationError(error)
+        return market
 
     def validate_image(self, image_fields):
         form = MarketImageSerializer(data=image_fields)
