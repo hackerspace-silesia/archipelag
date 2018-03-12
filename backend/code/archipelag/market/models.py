@@ -32,10 +32,9 @@ class Image(Model):
     image_path = ImageField(upload_to="media/", null=True, blank=True)
 
     def url(self):
-        return os.path.join('/', settings.MEDIA_URL, os.path.basename(str(self.image)))
+        return os.path.join('/', settings.MEDIA_URL, os.path.basename(str(self.image_path)))
 
     def image_tag(self):
-        # used in the admin site model as a "thumbnail"
         return mark_safe('<img src="{}" width="150" height="150" />'.format(self.url()))
     image_tag.short_description = 'image_path'
 
