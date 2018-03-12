@@ -2,11 +2,9 @@ from unittest.mock import patch
 from uuid import uuid4
 import os
 
-from pytest import fixture
 from rest_framework.test import APIClient
 
 from archipelag.market.models import Market
-from archipelag.market.models import Image
 from archipelag.test.base_test_case import BaseTestCase
 
 
@@ -91,7 +89,7 @@ class TestImage(BaseTestCase):
                 format='multipart',
             )
 
-        os.remove(os.getcwd()+"/market/images/socek.png")
+        os.remove(os.getcwd()+"/media/socek.png")
         assert response.json() == dict(message='Przesłano poprawnie')
         assert response.status_code == 200
 

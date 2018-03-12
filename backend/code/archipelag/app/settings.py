@@ -114,7 +114,7 @@ STATICFILES_DIRS = (
     os.path.join(BASE_DIR, "static"),
 )
 
-MEDIA_URL = '/market/'
+MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, '.')
 STATIC_URL = os.environ.get('DJANGO_STATIC_FILES', '/static/')
 STATIC_ROOT = '/django-static/'

@@ -8,6 +8,7 @@ from django.db.models import Model
 from django.db.models import ImageField
 from django.db.models import UUIDField
 from django.utils.safestring import mark_safe
+from django.conf import settings
 
 from archipelag.ngo.models import NgoUser
 
@@ -28,10 +29,10 @@ class Market(Model):
 
 class Image(Model):
     market = ForeignKey(Market, null=False)
-    image_path = ImageField(upload_to="market/images/", null=True, blank=True)
+    image_path = ImageField(upload_to="media/", null=True, blank=True)
 
     def url(self):
-        return "/market/market/images/{}".format(os.path.basename(str(self.image_path)))
+        return os.path.join('/', settings.MEDIA_URL, os.path.basename(str(self.image)))
 
     def image_tag(self):
         # used in the admin site model as a "thumbnail"

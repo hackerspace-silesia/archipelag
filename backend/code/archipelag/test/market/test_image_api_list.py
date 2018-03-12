@@ -32,7 +32,7 @@ class TestGetImage(BaseTestCase):
 
         assert len(returned_images) == 1
         assert returned_images[0]["id"] == expected_image.id
-        assert returned_images[0]["image_path"] == "/market/{}"\
+        assert returned_images[0]["image_path"] == "/media/{}"\
                                                    .format(str(expected_image.image_path))
         assert returned_images[0]["market_id"] == str(expected_image.market_id)
 
@@ -45,7 +45,7 @@ class TestGetImage(BaseTestCase):
 
         assert len(returned_images) == 2
         assert returned_images[1]["id"] == expected_second_image.id
-        assert returned_images[1]["image_path"] == "/market/{}".format(str(expected_image.image_path))
+        assert returned_images[1]["image_path"] == "/media/{}".format(str(expected_image.image_path))
         assert returned_images[1]["market_id"] == str(expected_image.market_id)
 
     def test_get_images_when_missing_market_id(self, auth_client):
