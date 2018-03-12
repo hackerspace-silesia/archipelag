@@ -4,6 +4,7 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework import viewsets
 from rest_framework.response import Response
 from rest_framework.exceptions import ValidationError
+from datetime import datetime
 
 from archipelag.market.settings import POINTS_RULES
 from archipelag.market.models import Market
@@ -27,38 +28,72 @@ class MarketList(viewsets.ModelViewSet):
         """
         market_fields = request.data['body']
         current_ngo = request.user.ngouser
+        errors = self.validate_create(current_ngo, market_fields)
+        if errors:
+            return Response(dict(error=errors), status=400)
+        new_market_id = self.create_market_with_user_pay(market_fields, current_ngo)
+        return Response(dict(success={'market_id': new_market_id}))
+
+    def create_market_with_user_pay(self, market_fields, current_ngo):
+        market_fields["owner"] = current_ngo
+        new_market = Market.objects.create(**market_fields)
+        current_ngo.subtract_coins(POINTS_RULES['add_own_market'])
+        return new_market.id
+
+    def validate_create(self, current_ngo, market_fields):
         try:
-            self.validate(current_ngo, market_fields)
+            self.user_validate(current_ngo, market_fields)
+            self.validate_market(market_fields)
         except ValidationError as error:
             error = get_proper_format_for_valid_exception(error)
-            return Response(dict(error=error), status=400)
-        try:
-            new_market = self.get_new_market(current_ngo, market_fields)
-        except TypeError as error:
-            return Response(dict(error=str(error)), status=400)
-        current_ngo.subtract_coins(POINTS_RULES['add_own_market'])
-        return Response(dict(success={'market_id': new_market.id}))
+            return error
 
-    def validate(self, current_ngo, market_fields):
+    def user_validate(self, current_ngo, market_fields):
         if not current_ngo.is_user_can_add_market():
             raise ValidationError("Za mało punktów.")
         return self.validate_market(market_fields)
 
     def validate_market(self, market_fields):
         form = MarketSerializer(data=market_fields)
+        for key in market_fields.keys():
+            if key not in ["title", "date_starting", "date_ending", "hashtag"]:
+                raise ValidationError("Nieznane pole marketu: {}".format(key))
         return form.is_valid(raise_exception=True)
-
-    def get_new_market(self, current_ngo, body_data):
-        """Create market and return."""
-        body_data["owner"] = current_ngo
-        new_market = Market.objects.create(**body_data)
-        return new_market
 
 
 class UploadedImagesViewSet(viewsets.ModelViewSet):
     queryset = Image.objects.all()
     permission_classes = (IsAuthenticated, )
     serializer_class = MarketImageSerializer
+
+    def list(self, request):
+        market_id = request.query_params.get('market_id', None)
+        errors = self.get_validation_error(market_id)
+        if errors:
+            return errors
+        queryset = Image.objects.filter(market=market_id)
+        markets_list = MarketImageSerializer(queryset, many=True).data
+        return Response(markets_list, status=200)
+
+    def get_validation_error(self, market_id):
+        if market_id is None:
+            return Response(dict(error="Brakuje marketu dla którego można by pobrać obrazki"), status=422)
+        elif not self.validate_uuid4(market_id):
+            return Response(dict(error="Niepoprawny format uuid marketu"), status=422)
+        market_that_request_concern = Market.objects.filter(id=market_id).first()
+        if market_that_request_concern is None:
+            return Response(dict(error="Zapytanie prosi o obrazki do nieznanego marketu"), status=404)
+        return None
+
+    def validate_uuid4(self, uuid_string):
+        """
+        Validate that a UUID string is in fact a valid uuid4.
+        """
+        try:
+            UUID(uuid_string, version=4)
+        except (ValueError, AttributeError) as error:
+            return False
+        return True
 
     def create(self, request):
         """
@@ -92,11 +127,5 @@ class UploadedImagesViewSet(viewsets.ModelViewSet):
             raise ValidationError(error)
 
     def validate_image(self, image_fields):
-        market_id = image_fields.get("market_id")
-        try:
-            if market_id:
-                UUID(market_id, version=4)
-        except (ValueError, AttributeError) as error:
-            raise ValidationError(dict(market_id=error))
         form = MarketImageSerializer(data=image_fields)
         return form.is_valid(raise_exception=True)

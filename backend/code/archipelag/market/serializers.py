@@ -17,6 +17,15 @@ class MarketSerializer(serializers.ModelSerializer):
         fields = ('id', 'owner', 'title', 'date_starting',
                   'date_ending', 'date_created', 'date_modified', 'hashtag')
 
+    def validate(self, data):
+        """
+        Check that the start is before the stop.
+        """
+        if "date_starting" in data and data['date_starting'] > data['date_ending']:
+            raise serializers.ValidationError(
+                dict(date_starting="Rozpoczęcie musi być wcześniej od zakończenia"))
+        return data
+
 
 class MarketImageSerializer(serializers.ModelSerializer):
     market_id = serializers.UUIDField(source='market.id', required=True)
@@ -24,4 +33,4 @@ class MarketImageSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Image
-        fields = ('market_id', 'image_path',)
+        fields = ('id', 'market_id', 'image_path',)

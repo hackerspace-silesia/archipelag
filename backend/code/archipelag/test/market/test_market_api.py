@@ -107,6 +107,22 @@ class TestMarketApi(BaseTestCase):
         response = client.post('/api/market/', market, format="json")
 
         assert response.json() == {
-            "error": "'h' is an invalid keyword argument for this function"
+            "error": "Nieznane pole marketu: h"
         }
         assert response.status_code == 400
+
+    def test_add_market_when_starting_date_is_after_end(self, auth_client):
+        market = {
+            'body': {
+                'title': 'jjj',
+                'hashtag': 'hh',
+                'date_starting': '2018-02-22 23:50',
+                'date_ending': '2018-02-20 23:50'
+            }
+        }
+        client, ngo = auth_client
+        response = client.post('/api/market/', market, format="json")
+
+        assert response.status_code == 400
+        assert response.json()["error"] == dict(
+            date_starting=["Rozpoczęcie musi być wcześniej od zakończenia"])

@@ -1,3 +1,5 @@
+from uuid import UUID
+
 from archipelag.message.models import Message
 from archipelag.message.models import MessageType
 from archipelag.message.serializers import MessageSerializer
@@ -50,7 +52,6 @@ class MessagesList(viewsets.ModelViewSet):
             return Response(dict(error="Błąd z bazą danych. Skontaktuj się z administratorem."))
         add_coins_if_rules_allow(request.user.ngouser, data['market'])
         return Response(dict(message=get_statement_for_user(new_message)))
-
 
 class MessagesTypesList(viewsets.ReadOnlyModelViewSet):
     permission_classes = (IsAuthenticated,)
