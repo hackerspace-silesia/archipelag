@@ -7,7 +7,6 @@ from django.db.models import ForeignKey
 from django.db.models import Model
 from django.db.models import ImageField
 from django.db.models import UUIDField
-from django.conf import settings
 from django.utils.safestring import mark_safe
 
 from archipelag.ngo.models import NgoUser
@@ -32,11 +31,7 @@ class Image(Model):
     image_path = ImageField(upload_to="market/images/", null=True, blank=True)
 
     def url(self):
-        # returns a URL for either internal stored or external image url
-        # is this the best way to do this??
-        # http://127.0.0.1:8000/market/market/images/Screenshot_from_2018-01-23_21-31-48.png
-
-        return "/market/market/images/"+ os.path.basename(str(self.image_path))
+        return "/market/market/images/{}".format(os.path.basename(str(self.image_path)))
 
     def image_tag(self):
         # used in the admin site model as a "thumbnail"
