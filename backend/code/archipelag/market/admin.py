@@ -12,7 +12,9 @@ class MarketAdmin(ModelAdmin):
 
 
 class ImageAdmin(ModelAdmin):
-    pass
+    # explicitly reference fields to be shown, note image_tag is read-only
+    fields = ( 'image_tag','image_path', 'market')
+    readonly_fields = ('image_tag',)
 
 site.register(Market, MarketAdmin)
 site.register(Image, ImageAdmin)

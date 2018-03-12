@@ -25,6 +25,7 @@ urlpatterns = [
     url(r'^api/share_log/', include('archipelag.share_log.urls'), ),
     url(r'^api/ngo/', include('archipelag.ngo.urls'), ),
 ]
+urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
 router = DefaultRouter()
 router.register(r'api/message', MessagesList, base_name='messages_list')

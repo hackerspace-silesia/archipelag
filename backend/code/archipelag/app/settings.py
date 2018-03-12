@@ -113,7 +113,9 @@ USE_TZ = True
 STATICFILES_DIRS = (
     os.path.join(BASE_DIR, "static"),
 )
-MEDIA_URL='/media/'
+
+MEDIA_URL = '/market/'
+MEDIA_ROOT = os.path.join(BASE_DIR, '.')
 STATIC_URL = os.environ.get('DJANGO_STATIC_FILES', '/static/')
 STATIC_ROOT = '/django-static/'
 LOGIN_REDIRECT_URL = '/market/'
