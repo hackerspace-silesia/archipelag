@@ -1,8 +1,6 @@
 <template>
   <section class="container">
-    <h2>Dodaj wydarzenie</h2>
-        <h3>2/3</h3>
-          <h4>Dodaj obrazki do marketu - maksymalnie 4 po 0.5 MB</h4>
+     <h4>Kliknij na obrazek by usunać z panelu przesyłania</h4>
     <div>
       <b-alert  :show="isError" variant="danger">{{error}}</b-alert>
         <b-alert  :show="isSuccess" variant="success">{{success}}</b-alert>
@@ -18,7 +16,6 @@
             <button class="btn btn-primary"  v-if="!formSubmitted" type="submit"><i class="glyphicon glyphicon-ok"></i> Prześlij obrazki </button>
           </div>
         </form>
-          <button class="btn btn-primary" v-on:click="nextPage"><i class="glyphicon glyphicon-ok"></i> Przejdź dalej </button>
     </div>
       <loader v-show="isLoading"></loader>
   </section>
@@ -76,9 +73,6 @@ import 'vue2-dropzone/dist/vue2Dropzone.css';
           this.isSuccess = false;
       },
 
-      'nextPage':function(){
-        this.$router.push('/dodaj_wiadomosc/'+this.$route.params.market_id);
-      },
       'sending': function(file, xhr, formData){
         console.log(file);
         this.isLoading = true;
