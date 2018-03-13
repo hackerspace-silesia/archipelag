@@ -21,9 +21,16 @@ class MarketSerializer(serializers.ModelSerializer):
         """
         Check that the start is before the stop.
         """
-        if "date_starting" in data and data['date_starting'] > data['date_ending']:
+        if data['date_starting'] is not None and data['date_ending'] is not None:
+            if data['date_starting'] > data['date_ending']:
+                raise serializers.ValidationError(
+                    dict(date_starting="Rozpoczęcie musi być wcześniej od zakończenia"))
+        elif data['date_starting'] is not None and data['date_ending'] is None:
             raise serializers.ValidationError(
-                dict(date_starting="Rozpoczęcie musi być wcześniej od zakończenia"))
+                dict(date_starting="Data rozpoczęcia musi posiadać datę zakończenia"))
+        elif data['date_starting'] is None and data['date_ending'] is not None:
+            raise serializers.ValidationError(
+                dict(date_ending="Data zakończenia musi posiadać datę rozpoczęcia"))
         return data
 
 

@@ -126,3 +126,48 @@ class TestMarketApi(BaseTestCase):
         assert response.status_code == 400
         assert response.json()["error"] == dict(
             date_starting=["Rozpoczęcie musi być wcześniej od zakończenia"])
+
+    def test_case_when_dates_are_none_create_correct_market(self, auth_client):
+        market = {
+            'body': {
+                'title': 'jjj',
+                'hashtag': 'hh',
+                'date_starting': None,
+                'date_ending': None
+            }
+        }
+        client, ngo = auth_client
+        response = client.post('/api/market/', market, format="json")
+
+        assert "success" in response.json()
+        assert response.status_code == 200
+
+    def test_case_when_date_starting_is_exist_but_ending_dont(self, auth_client):
+        market = {
+            'body': {
+                'title': 'jjj',
+                'hashtag': 'hh',
+                'date_starting': '2018-02-22 23:50',
+                'date_ending': None
+            }
+        }
+        client, ngo = auth_client
+        response = client.post('/api/market/', market, format="json")
+
+        assert response.json()["error"] == dict(date_starting=['Data rozpoczęcia musi posiadać datę zakończenia'])
+        assert response.status_code == 400
+
+    def test_case_when_date_ending_is_exist_but_starting_dont(self, auth_client):
+        market = {
+            'body': {
+                'title': 'jjj',
+                'hashtag': 'hh',
+                'date_starting': None,
+                'date_ending': '2018-02-22 23:50'
+            }
+        }
+        client, ngo = auth_client
+        response = client.post('/api/market/', market, format="json")
+
+        assert response.json()["error"] == dict(date_ending=['Data zakończenia musi posiadać datę rozpoczęcia'])
+        assert response.status_code == 400

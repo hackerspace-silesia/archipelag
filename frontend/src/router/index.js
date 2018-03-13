@@ -6,6 +6,7 @@ import AddMessages from '@/components/services_messages/add_messages'
 import EditMessagesServices from '@/components/services_messages/edit_messages'
 import AddMarketImages from '@/components/market/add/add_market_image'
 import EditPanel from '@/components/market/edit/panel'
+import EditImagesMarket from '@/components/market/edit/images'
 import EditBasicMarket from '@/components/market/edit/basic_market'
 import AddMarket from '@/components/market/add/add_market'
 
@@ -76,6 +77,12 @@ const router = new Router({
             path: '/edytuj_wiadomosci/:market_id',
             name: 'EditMessagesServices',
             component: EditMessagesServices,
+            meta: { requiresAuth: true }
+        },
+        {
+            path: '/edytuj_obrazki/:market_id',
+            name: 'EditImagesMarket',
+            component: EditImagesMarket,
             meta: { requiresAuth: true }
         },
         {

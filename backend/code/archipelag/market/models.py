@@ -32,7 +32,7 @@ class Image(Model):
     image_path = ImageField(upload_to="media/", null=True, blank=True)
 
     def url(self):
-        return os.path.join('/', settings.MEDIA_URL, os.path.basename(str(self.image_path)))
+        return os.path.join('/', settings.MEDIA_URL, 'media', os.path.basename(str(self.image_path)))
 
     def image_tag(self):
         return mark_safe('<img src="{}" width="150" height="150" />'.format(self.url()))

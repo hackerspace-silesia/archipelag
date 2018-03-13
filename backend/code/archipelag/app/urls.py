@@ -25,7 +25,7 @@ urlpatterns = [
     url(r'^api/share_log/', include('archipelag.share_log.urls'), ),
     url(r'^api/ngo/', include('archipelag.ngo.urls'), ),
 ]
-urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+
 
 router = DefaultRouter()
 router.register(r'api/message', MessagesList, base_name='messages_list')
@@ -33,7 +33,7 @@ router.register(r'api/messages_types', MessagesTypesList, base_name='messages_ty
 router.register(r'api/ngo', NgoUserList, base_name='all_ngos')
 router.register(r'api/images', UploadedImagesViewSet, base_name='images')
 urlpatterns.extend(router.urls)
-
-if not settings.DEBUG:
-    urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
+urlpatterns.extend(static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT))
+# if not settings.DEBUG:
+#     urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
 

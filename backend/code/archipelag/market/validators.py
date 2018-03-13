@@ -29,7 +29,7 @@ class CreateMarketValidator(object):
     def market_validate(cls, market_fields):
         form = MarketSerializer(data=market_fields)
         for key in market_fields.keys():
-            if key not in ["title", "date_starting", "date_ending", "hashtag"]:
+            if key not in ["title", "date_starting", "date_ending", "hashtag", "owner"]:
                 raise ValidationError("Nieznane pole marketu: {}".format(key))
         return form.is_valid(raise_exception=True)
 
