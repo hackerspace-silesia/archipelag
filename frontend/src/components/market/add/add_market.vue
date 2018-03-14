@@ -2,9 +2,7 @@
   <section class="container">
     <b-alert variant="danger"
        dismissible
-       :show="showDismissibleAlertError"
-       @dismissed="showDismissibleAlertError=false"
-       >
+       :show="showDismissibleAlertError"@dismissed="showDismissibleAlertError=false">
     {{error}}
     </b-alert>
 
@@ -134,27 +132,39 @@
             })
             .then(response => {
               this.isLoading = false;
-              this.redirectOrReturnError(response['data']);
+              this.redirectOrReturnError(response);
             })
-            .catch(e => {
-              this.isLoading = false;
+            .catch(error => {
+              const response = error.response
+              if (response.status == 400){
+                this.showDismissibleAlertError = true;
+                console.log(response)
+                const errors = response['data']['error'];
+                if (typeof errors === "object"){
+                  let index = 0;
+                  for (let key in response['data']['error']) {
+                    this.error = response['data']['error'][key][0];
+                  }
+                }
+
+              }else{
+              console.log("JES")
+
               this.error = "Błąd po stronie serwera. Skontaktuj się z administratorem."
+            }
+            this.isLoading = false;
               console.log(e)
             })
           }
       },
 
       redirectOrReturnError(response){
-        if ('error' in response){
-          this.showDismissibleAlertError = true;
-          this.error = response['error'];
-          this.isLoading = false;
-        }
-        else{
+        console.log("KOKO")
+        this.isLoading = false;
+        console.log(response.status_code)
           this.imagesUrl = process.env.BACKEND+'images/';
           const market_id = response['success']['market_id'];
-           this.$router.push('/dodaj_obrazek/'+market_id);
-          }
+          this.$router.push('/dodaj_obrazek/'+market_id);
         },
 
       onStartChange(e) {
