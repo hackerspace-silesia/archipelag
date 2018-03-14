@@ -99,8 +99,8 @@
           owner:1,
           title:"",
           hashtag:"",
-          date_starting: moment(null),
-          date_ending: moment(null),
+          date_starting: null,
+          date_ending: null,
         },
         configs: {
           start: {
@@ -122,9 +122,23 @@
       axios,
     },
     methods: {
-
+        isFormValidate(){
+          if (this.form.title.length == 0){
+              return false;
+          }else if(this.form["date_starting"] == null && this.form["date_ending"] != ""){
+              this.showDismissibleAlertError = true;
+               this.error = "Data zakończenia musi mieć datę rozpoczęcia."
+              return false;
+          }else if(this.form["date_starting"] != "" && this.form["date_ending"] == null) {
+               this.showDismissibleAlertError = true;
+               this.error = "Data rozpoczęcia musi mieć datę zakończenia."
+              return false;
+          }
+          this.showDismissibleAlertError = false;
+          return true;
+        },
     submitForm(){
-      if (this.form.title.length > 0){
+      if (this.isFormValidate() == true){
             this.isLoading = true
             axios.defaults.headers.common['Authorization'] = `JWT ${localStorage.getItem('jwtToken')}`;
             axios.post(process.env.BACKEND+`market/`, {
@@ -135,25 +149,25 @@
               this.redirectOrReturnError(response);
             })
             .catch(error => {
+                console.log(error)
               const response = error.response
-              if (response.status == 400){
+              this.isLoading = false;
+              if (error.status == 400){
                 this.showDismissibleAlertError = true;
-                console.log(response)
                 const errors = response['data']['error'];
                 if (typeof errors === "object"){
                   let index = 0;
                   for (let key in response['data']['error']) {
                     this.error = response['data']['error'][key][0];
                   }
+                }else{
+                    this.error = response['data']['error']
                 }
 
               }else{
-              console.log("JES")
-
               this.error = "Błąd po stronie serwera. Skontaktuj się z administratorem."
             }
-            this.isLoading = false;
-              console.log(e)
+
             })
           }
       },

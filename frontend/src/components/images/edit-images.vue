@@ -2,6 +2,8 @@
   <section class="container">
     <h2>Edytuj dodane obrazki</h2>
     <h4>Kliknij na obrazek by usunać</h4>
+          <b-alert  :show="isError" variant="danger">{{error}}</b-alert>
+        <b-alert  :show="isSuccess" variant="success">{{success}}</b-alert>
         <b-container fluid class="p-4 bg-white">
           <b-row >
             <b-col md="3" class="py-4 text-center" v-for="image in images">
@@ -33,7 +35,6 @@
         isLoading:false,
         isError:false,
         error:"",
-        formSubmitted:false,
         success:"",
         isSuccess:false,
         backendUrl : process.env.BACKEND.slice(0,21)
@@ -45,20 +46,14 @@
           axios.defaults.headers.common['Authorization'] = `JWT ${localStorage.getItem('jwtToken')}`;
           axios.get(process.env.BACKEND+"images/?market_id="+market_id,)
           .then(response => {
+            this.isError = false;
             this.isLoading = false;
-            if ('error' in response){
-              this.showDismissibleAlertError = true;
-              this.error = response['error'];
-              this.isLoading = false;
-            }
-            else{
-                this.images = response["data"]
-              }
+            this.images = response["data"]
           })
-          .catch(e => {
-            this.showDismissibleAlertError = true;
+          .catch(error => {
+            this.isError = true;
             this.isLoading = false;
-            this.error = "Prośba o edycję nieistniejącego marketu."
+            this.error = error.response.data.error
             console.log(e)
       })
         },

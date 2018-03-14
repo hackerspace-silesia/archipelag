@@ -13,7 +13,7 @@
           >
           </vueDropzone>
       <div class="form-group">
-            <button class="btn btn-primary"  v-if="!formSubmitted" type="submit"><i class="glyphicon glyphicon-ok"></i> Prześlij obrazki </button>
+            <button class="btn btn-primary" type="submit"><i class="glyphicon glyphicon-ok"></i> Prześlij obrazki </button>
           </div>
         </form>
     </div>
@@ -31,6 +31,7 @@ import 'vue2-dropzone/dist/vue2Dropzone.css';
     data() {
       return {
         dropzoneOptions: {
+                parallelUploads:1,
                 url:process.env.BACKEND+'images/',
                 myOwnOpt:7676,
                 thumbnailWidth: 150,
@@ -78,27 +79,35 @@ import 'vue2-dropzone/dist/vue2Dropzone.css';
         this.isLoading = true;
       },
       'showSuccess': function (file, message) {
-        console.log(message)
-        if ('error' in message){
-          this.isError = true;
-          this.isSuccess = false;
-          this.error = message.error;
-        }else{
           this.isError = false
           this.isSuccess = true;
-          this.success = message.message;
+          if ('message' in message) {
+            this.success = message.message;
+          }else{
+            this.success = "Nieznany status przesłanych obrazków, skontaktuj się z adminsitratorem"
+          }
           this.formSubmitted = true;
-//          this.$refs.myVueDropzone.disable()
-        }
-        console.log('A file was successfully uploaded')
           this.isLoading = false;
       },
       'showError':function(file, message, xhr){
+          console.log(message)
           this.$refs.myVueDropzone.removeFile(file)
-        this.isError = true;
-        this.error = message;
-        this.isLoading = false;
-        this.isSuccess = false;
+          this.isLoading = false;
+          this.isError = true;
+          this.isSuccess = false;
+          if (typeof message == "object"){
+              if ( typeof message.error == "object" && "market_id" in message.error){
+                   this.error = "Prośba o wysłanie obrazków na nieistniejący market";
+              }
+              this.error = message.error;
+          }else{
+              if(message == "Server responded with 0 code."){
+                  this.error = "Błąd po stronie serwera, skontaktuj się z administratorem."
+              }else {
+                this.error = message;
+              }
+          }
+
       },
       getFilesSendInformation(info){
         this.isSubmitted = true;

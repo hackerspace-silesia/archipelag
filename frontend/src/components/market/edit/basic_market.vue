@@ -101,11 +101,25 @@
           this.form.date_ending =  moment(market_data.date_ending).format('YYYY-MM-DD HH:mm')
           }
       })
-      .catch(e => {
-        this.showDismissibleAlertError = true;
-        this.isLoading = false;
-        this.error = "Prośba o edycję nieistniejącego marketu."
-        console.log(e)
+      .catch(error => {
+              const response = error.response
+              this.isLoading = false;
+              if (response.status == 400){
+                this.showDismissibleAlertError = true;
+                console.log(response)
+                const errors = response['data']['error'];
+                if (typeof errors === "object"){
+                  let index = 0;
+                  for (let key in response['data']['error']) {
+                    this.error = response['data']['error'][key][0];
+                  }
+                }else{
+                    this.error = response['data']['error']
+                }
+
+              }else{
+              this.error = "Błąd po stronie serwera. Skontaktuj się z administratorem."
+            }
       })
 
   },

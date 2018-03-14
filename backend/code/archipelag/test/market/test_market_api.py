@@ -42,7 +42,7 @@ class TestMarketApi(BaseTestCase):
         client, ngo = auth_client
         response = client.post('/api/market/', market, format="json")
 
-        assert "success" in response.json()
+        assert "message" in response.json()
         assert response.status_code == 200
 
     def test_user_substracting_coins_on_correct_add(self, auth_client):
@@ -139,7 +139,7 @@ class TestMarketApi(BaseTestCase):
         client, ngo = auth_client
         response = client.post('/api/market/', market, format="json")
 
-        assert "success" in response.json()
+        assert "message" in response.json()
         assert response.status_code == 200
 
     def test_case_when_date_starting_is_exist_but_ending_dont(self, auth_client):

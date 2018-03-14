@@ -32,7 +32,7 @@ class MarketList(viewsets.ModelViewSet):
         if errors:
             return Response(dict(error=errors), status=400)
         new_market_id = self.create_market_with_user_pay(market_fields, current_ngo)
-        return Response(dict(success={'market_id': new_market_id}))
+        return Response(dict(message={'market_id': new_market_id}))
 
     def create_market_with_user_pay(self, market_fields, current_ngo):
         market_fields["owner"] = current_ngo
@@ -73,6 +73,7 @@ class UploadedImagesViewSet(viewsets.ModelViewSet):
         except ValidationError as error:
             error = get_proper_format_for_valid_exception(error)
             return Response(dict(error=error), status=400)
-        Image.objects.create(
+
+            Image.objects.create(
                 image_path=fields["image_path"], market=market)
         return Response(dict(message="Przesłano poprawnie"))
