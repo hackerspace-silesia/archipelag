@@ -4,10 +4,7 @@
     <div>
       <b-alert dismissible @dismissed="isError=false" :show="isError" variant="danger">{{error}}</b-alert>
         <b-alert dismissible
-        :show="isSuccess"
-         variant="success"
-          @dismissed="isSuccess=false"
-         >{{success}}</b-alert>
+        :show="isSuccess" variant="success" @dismissed="isSuccess=false">{{success}}</b-alert>
         <form @submit.prevent="submitForm" >
           <vueDropzone ref="myVueDropzone" id="myVueDropzone"
           v-on:vdropzone-success="showSuccess"
