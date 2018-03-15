@@ -2,8 +2,12 @@
   <section class="container">
      <h4>Kliknij na obrazek by usunać z panelu przesyłania</h4>
     <div>
-      <b-alert  :show="isError" variant="danger">{{error}}</b-alert>
-        <b-alert  :show="isSuccess" variant="success">{{success}}</b-alert>
+      <b-alert dismissible @dismissed="isError=false" :show="isError" variant="danger">{{error}}</b-alert>
+        <b-alert dismissible
+        :show="isSuccess"
+         variant="success"
+          @dismissed="isSuccess=false"
+         >{{success}}</b-alert>
         <form @submit.prevent="submitForm" >
           <vueDropzone ref="myVueDropzone" id="myVueDropzone"
           v-on:vdropzone-success="showSuccess"
@@ -43,7 +47,7 @@ import 'vue2-dropzone/dist/vue2Dropzone.css';
                 dictFileTooBig:"Zbyt duży plik, max 0.5 MB",
                 dictInvalidFileType:"Zły typ",
                 dictRemoveFile:"Usuń",
-                dictMaxFilesExceeded:"Za dużo plików, max 4",
+                dictMaxFilesExceeded:"Nie można dodać więcej niż 4 obrazki",
                 uploadMultiple:false,
                 autoProcessQueue:false,
                 autoQueue:true,
@@ -65,6 +69,8 @@ import 'vue2-dropzone/dist/vue2Dropzone.css';
     methods: {
         'vdropzone-max-files-exceeded':function(file){
           this.$refs.myVueDropzone.removeFile(file)
+            this.isError = true;
+
       },
       'duplicate-file':function(file){
         this.$refs.myVueDropzone.removeFile(file)
@@ -79,7 +85,7 @@ import 'vue2-dropzone/dist/vue2Dropzone.css';
         this.isLoading = true;
       },
       'showSuccess': function (file, message) {
-          this.isError = false
+        this.$refs.myVueDropzone.removeFile(file)
           this.isSuccess = true;
           if ('message' in message) {
             this.success = message.message;
@@ -94,7 +100,6 @@ import 'vue2-dropzone/dist/vue2Dropzone.css';
           this.$refs.myVueDropzone.removeFile(file)
           this.isLoading = false;
           this.isError = true;
-          this.isSuccess = false;
           if (typeof message == "object"){
               if ( typeof message.error == "object" && "market_id" in message.error){
                    this.error = "Prośba o wysłanie obrazków na nieistniejący market";

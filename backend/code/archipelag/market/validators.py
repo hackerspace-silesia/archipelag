@@ -60,14 +60,14 @@ class GetImagesListValidator(object):
 
 class CreateImageValidator(object):
     @classmethod
-    def validate_market(cls, market):
+    def validate_market(cls, market, image_name):
         if market is None:
             raise ValidationError("Prośba o dodanie obrazka do nieistniejącego marketu")
         number_of_market_images = Image.objects.filter(
             market=market).count()
         print("NUMBERS", number_of_market_images)
         if number_of_market_images > 3:
-            error = "Do marketu już dodano {} obrazki.".format(number_of_market_images)
+            error = "Nie przesłano {}. Market przekroczył maksymalną liczbę obrazków: {}.".format(image_name, number_of_market_images)
             raise ValidationError(error)
         return market
 

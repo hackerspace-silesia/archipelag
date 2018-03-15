@@ -62,18 +62,18 @@ class UploadedImagesViewSet(viewsets.ModelViewSet):
         :return information about reason why he can't
                 create market or id of new market
         """
+        sended_image = request.FILES.get("file")
         market_id = request.data.get("market_id")
         fields = dict(
-            image_path=request.FILES.get("file"),
+            image_path=sended_image,
             market_id=market_id)
         try:
             CreateImageValidator.validate_image(fields)
             market = Market.objects.filter(id=market_id).first()
-            CreateImageValidator.validate_market(market)
+            CreateImageValidator.validate_market(market, sended_image.name)
         except ValidationError as error:
             error = get_proper_format_for_valid_exception(error)
             return Response(dict(error=error), status=400)
-
-            Image.objects.create(
+        Image.objects.create(
                 image_path=fields["image_path"], market=market)
-        return Response(dict(message="Przesłano poprawnie"))
+        return Response(dict(message="Przesłano poprawnie {}".format(sended_image.name)))

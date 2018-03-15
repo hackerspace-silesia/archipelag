@@ -177,7 +177,7 @@
         this.isLoading = false;
         console.log(response.status_code)
           this.imagesUrl = process.env.BACKEND+'images/';
-          const market_id = response['success']['market_id'];
+          const market_id = response['data']['message']['market_id'];
           this.$router.push('/dodaj_obrazek/'+market_id);
         },
 
