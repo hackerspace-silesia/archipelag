@@ -156,7 +156,6 @@
                 this.showDismissibleAlertError = true;
                 const errors = response['data']['error'];
                 if (typeof errors === "object"){
-                  let index = 0;
                   for (let key in response['data']['error']) {
                     this.error = response['data']['error'][key][0];
                   }
@@ -173,7 +172,6 @@
       },
 
       redirectOrReturnError(response){
-        console.log("KOKO")
         this.isLoading = false;
         console.log(response.status_code)
           this.imagesUrl = process.env.BACKEND+'images/';
