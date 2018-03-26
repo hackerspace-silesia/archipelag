@@ -13,39 +13,41 @@ class TestGetImage(BaseTestCase):
     def market_with_image(self, user_with_ngo):
         user, ngo = user_with_ngo
         market = Market.objects.create(owner=ngo, title="1", hashtag="#1")
-        image = Image.objects.create(market=market, image_path="yolo")
+        image = Image.objects.create(market=market, image_path="media/image.png")
         return market, image
 
     def test_get_images_correctly_return_correct_status(self, auth_client):
         client, ngo = auth_client
         market = Market.objects.create(
             owner=ngo, title="1", hashtag="#1")
-        Image.objects.create(market=market, image_path="yolo")
-        response = client.get('/api/images/?market_id={}'.format(market.id),)
+        Image.objects.create(market=market, image_path="image.png")
+        response = client.get('/api/images/?market_id={}'.format(market.id))
+
         assert response.status_code == 200
 
-    def test_get_images_correctly_return_correct_data_with_one_image(self, auth_client, market_with_image):
+    def test_get_images_correctly_return_market_image(self, auth_client, market_with_image):
         client, ngo = auth_client
         market, expected_image = market_with_image
         response = client.get('/api/images/?market_id={}'.format(market.id),)
-        returned_images = response.json()
 
+        returned_images = response.json()
+        image_spec = returned_images[0]
+        print()
         assert len(returned_images) == 1
-        assert returned_images[0]["id"] == expected_image.id
-        assert returned_images[0]["image_path"] == "/media/{}"\
-                                                   .format(str(expected_image.image_path))
-        assert returned_images[0]["market_id"] == str(expected_image.market_id)
+        assert image_spec["id"] == expected_image.id
+        assert image_spec["image_path"] == "/api/{}".format(str(expected_image.image_path))
+        assert image_spec["market_id"] == str(expected_image.market_id)
 
     def test_get_images_correctly_return_data_with_two_images(self, auth_client, market_with_image):
         client, ngo = auth_client
         market, expected_image = market_with_image
-        expected_second_image = Image.objects.create(market=market, image_path="yolo")
+        expected_second_image = Image.objects.create(market=market, image_path="media/image.png")
         response = client.get('/api/images/?market_id={}'.format(market.id),)
         returned_images = response.json()
 
         assert len(returned_images) == 2
         assert returned_images[1]["id"] == expected_second_image.id
-        assert returned_images[1]["image_path"] == "/media/{}".format(str(expected_image.image_path))
+        assert returned_images[1]["image_path"] == "/api/{}".format(str(expected_image.image_path))
         assert returned_images[1]["market_id"] == str(expected_image.market_id)
 
     def test_get_images_when_missing_market_id(self, auth_client):
@@ -59,7 +61,7 @@ class TestGetImage(BaseTestCase):
         market, expected_image = market_with_image
 
         market2 = Market.objects.create(owner=ngo, title="life is life", hashtag="#1")
-        Image.objects.create(market=market2, image_path="yolo")
+        Image.objects.create(market=market2, image_path="media/image.png")
 
         response = client.get('/api/images/?market_id={}'.format(market.id))
         returned_images = response.json()

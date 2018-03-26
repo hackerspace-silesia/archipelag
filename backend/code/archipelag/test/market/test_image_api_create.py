@@ -90,7 +90,7 @@ class TestImage(BaseTestCase):
             )
 
         os.remove(os.getcwd()+"/media/socek.png")
-        assert response.json() == dict(message='Przesłano poprawnie')
+        assert response.json() == dict(message='Przesłano poprawnie socek.png')
         assert response.status_code == 200
 
     @patch('archipelag.market.views.Image.objects.filter')
@@ -107,5 +107,5 @@ class TestImage(BaseTestCase):
                 data,
                 format='multipart',
             )
-        assert response.json() == dict(error='Do marketu już dodano 4 obrazki.')
+        assert response.json() == dict(error='Nie przesłano socek.png. Nie można dodać do marketu więcej niż 4 obrazki.')
         assert response.status_code == 400
