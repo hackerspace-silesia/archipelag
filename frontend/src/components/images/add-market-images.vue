@@ -2,8 +2,8 @@
   <section class="container">
      <h4>Kliknij na obrazek by usunać z panelu przesyłania</h4>
     <div>
-        <b-alert v-for="alert in errorsAlerts" dismissible show @dismissed="true" variant="danger">{{alert}}</b-alert>
-        <b-alert v-for="alert in successAlerts" dismissible show variant="success" @dismissed="true">{{alert}}</b-alert>
+        <b-alert v-for="alert in errorsAlerts" dismissible show variant="danger"  >{{alert}}</b-alert>
+        <b-alert v-for="alert in successAlerts" dismissible show variant="success" >{{alert}}</b-alert>
         <form @submit.prevent="submitForm" >
           <vueDropzone ref="myVueDropzone" id="myVueDropzone"
           v-on:vdropzone-success="showSuccess"
