@@ -1,6 +1,6 @@
 <template>
-<div id="topnav">
-  <b-navbar toggleable="md" type="dark" variant="info">
+<div id="topnav" >
+  <b-navbar class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top" toggleable="md" type="dark" variant="info">
 
     <b-navbar-toggle target="nav_collapse"></b-navbar-toggle>
 
@@ -10,9 +10,20 @@
 
       <!-- Right aligned nav items -->
       <b-navbar-nav class="ml-auto">
-    <router-link to="/market"><b-button class="col-12">Targ</b-button></router-link>
-    <router-link to="/dodaj_market"> <b-button class="col-12">Dodaj</b-button></router-link>
-    <b-button v-on:click="logout">Wyloguj</b-button>
+        <router-link to="/market">
+          <li class="nav-item">
+            <a class="nav-link" href="#">Targ</a>
+          </li>
+        </router-link>
+    <router-link to="/dodaj_market">
+      <li class="nav-item">
+          <a class="nav-link" href="#">Dodaj</a>
+      </li>
+    </router-link>
+    <div v-on:click="logout">
+       <li class="nav-item">
+              <a class="nav-link" href="#">Wyloguj</a>
+          </li></div>
       </b-navbar-nav>
 
     </b-collapse>
@@ -59,8 +70,5 @@ methods:{
 </script>
 
 <style scoped>
-    button {
-        background-color:#ffdb93;
-        color:black;
-    }
+
 </style>

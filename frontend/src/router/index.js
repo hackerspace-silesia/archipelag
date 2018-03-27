@@ -9,6 +9,7 @@ import EditPanel from '@/components/market/edit/panel'
 import EditImagesMarket from '@/components/images/edit-images-panel'
 import EditBasicMarket from '@/components/market/edit/basic_market'
 import AddMarket from '@/components/market/add/add_market'
+import Intro from '@/components/intro/intro'
 
 import LogIn from '@/components/login'
 import SignUp from '@/components/signUp/signUp'
@@ -23,9 +24,8 @@ const router = new Router({
     routes: [
         {
             path: "/",
-            redirect: {
-                name: "market"
-            }
+            name: 'intro',
+            component: Intro,
         },
         {
             path: '/market',
