@@ -19,7 +19,7 @@
     </b-alert>
     <b-card no-body class="mb-1" v-for="service in types">
       <b-card-header header-tag="header" class="p-1" role="tab">
-        <b-btn block v-b-toggle="service.service" v-on:click="closeInformations"
+        <b-btn style="background-color: rgb(90, 128, 204);" block v-b-toggle="service.service" v-on:click="closeInformations"
                v-b-toggle.service.service variant="info" size="lg">
                 {{ service.content ? 'Edytuj' : 'Dodaj' }}
                   {{service.service}}
@@ -27,7 +27,8 @@
         </b-btn>
       </b-card-header>
       <b-collapse v-bind:id="service.service" accordion="my-accordion" role="tabpanel">
-                  <button v-show="service.content"
+                  <button
+                          v-show="service.content"
                           v-on:click="deleteMsg(service.msg_id)"
                           type="button" class="close .btn-warning" id="x" >usuń</button>
           <text-area-counter v-bind:service="service" v-bind:getFormValues="getFormValues"></text-area-counter>
@@ -175,9 +176,10 @@
     background: red;
     color: white;
     top: 6px;
-    right: 4%;
+    right: 4.9%;
     padding: 10px;
     opacity: 100;
-    width: 90px;
+    width: 80;
+  font-size: 18px;
 }
 </style>

@@ -1,10 +1,10 @@
 <template>
-  <div role="tablist">
+  <div class="image-panel" role="tablist">
         <h2>Panel edycji obrazków</h2>
 
     <b-card no-body class="mb-1">
       <b-card-header header-tag="header" class="p-1" role="tab">
-        <b-btn block href="#" v-b-toggle.accordion2 variant="info">Usuń obrazki z marketu</b-btn>
+        <b-btn class="btn btn-info btn-lg btn-block" style="background-color: rgb(90, 128, 204);" block href="#" v-b-toggle.accordion2 variant="info">Usuń obrazki z marketu</b-btn>
       </b-card-header>
       <b-collapse v-on:show="onOpen" id="accordion2" accordion="my-accordion" role="tabpanel">
         <b-card-body>
@@ -14,7 +14,7 @@
     </b-card>
     <b-card no-body class="mb-1">
       <b-card-header header-tag="header" class="p-1" role="tab">
-        <b-btn block href="#" v-b-toggle.accordion1 variant="info">Dodaj obrazki</b-btn>
+        <b-btn class="btn btn-info btn-lg btn-block" style="background-color: rgb(90, 128, 204);" block href="#" v-b-toggle.accordion1 variant="info">Dodaj obrazki</b-btn>
       </b-card-header>
       <b-collapse id="accordion1"  accordion="my-accordion" role="tabpanel">
         <b-card-body>
@@ -50,4 +50,8 @@ export default {
   }
 }
 </script>
-
+<style>
+  .image-panel{
+    margin-top: 120px;
+  }
+</style>

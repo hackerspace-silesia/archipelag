@@ -3,26 +3,25 @@
   <b-navbar class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top" toggleable="md" type="dark" variant="info">
 
     <b-navbar-toggle target="nav_collapse"></b-navbar-toggle>
-
-    <b-navbar-brand href="#">{{name}} masz {{coins}} punktów</b-navbar-brand>
-
+    <router-link to="/">
+            <b-navbar-brand >{{name}} masz {{coins}} punktów</b-navbar-brand>
+    </router-link>
     <b-collapse is-nav id="nav_collapse">
-
       <!-- Right aligned nav items -->
       <b-navbar-nav class="ml-auto">
         <router-link to="/market">
           <li class="nav-item">
-            <a class="nav-link" href="#">Targ</a>
+            <a class="nav-link">Baza</a>
           </li>
         </router-link>
     <router-link to="/dodaj_market">
       <li class="nav-item">
-          <a class="nav-link" href="#">Dodaj</a>
+          <a class="nav-link">Dodaj</a>
       </li>
     </router-link>
     <div v-on:click="logout">
        <li class="nav-item">
-              <a class="nav-link" href="#">Wyloguj</a>
+              <a class="nav-link">Wyloguj</a>
           </li></div>
       </b-navbar-nav>
 
@@ -70,5 +69,7 @@ methods:{
 </script>
 
 <style scoped>
-
+.navbar-brand{
+  white-space:normal;
+}
 </style>

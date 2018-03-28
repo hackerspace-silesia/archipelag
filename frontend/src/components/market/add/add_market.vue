@@ -11,7 +11,7 @@
       </div>
       <div class="col-md-6 center" >
 
-    <b-card bg-variant="light">
+    <b-card class="bg-dark" bg-variant="light">
         <h2>Dodaj wydarzenie</h2>
         <h3>1/3</h3>
         <h4>Dodaj podstawowe informacje</h4>
@@ -125,7 +125,11 @@
         isFormValidate(){
           if (this.form.title.length == 0){
               return false;
-          }else if(this.form["date_starting"] == null && this.form["date_ending"] != ""){
+          }else if(this.form["date_starting"] == null && this.form["date_ending"] == null) {
+
+            return true;
+          }
+          else if(this.form["date_starting"] == null && this.form["date_ending"] != ""){
               this.showDismissibleAlertError = true;
                this.error = "Data zakończenia musi mieć datę rozpoczęcia."
               return false;
@@ -149,18 +153,19 @@
               this.redirectOrReturnError(response);
             })
             .catch(error => {
-                console.log(error)
+                console.log(error.response)
               const response = error.response
               this.isLoading = false;
-              if (error.status == 400){
+              if (response.status == 400){
                 this.showDismissibleAlertError = true;
                 const errors = response['data']['error'];
+                console.log(errors)
                 if (typeof errors === "object"){
-                  for (let key in response['data']['error']) {
-                    this.error = response['data']['error'][key][0];
+                  for (let key in errors) {
+                    this.error = errors[key][0];
                   }
                 }else{
-                    this.error = response['data']['error']
+                    this.error = errors
                 }
 
               }else{
@@ -191,3 +196,15 @@
   }
 
 </script>
+<style>
+  .card-body{
+    color:white;
+  }
+  h2,h3,h4{
+  font-family: "Century Gothic", CenturyGothic, AppleGothic, sans-serif;
+}
+  .container{
+  font-family: "Century Gothic", CenturyGothic, AppleGothic, sans-serif;
+    margin-top: 120px;
+  }
+</style>

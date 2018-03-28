@@ -15,7 +15,7 @@
                        <b-progress-bar :value="warning" variant="danger"></b-progress-bar>
                      </b-progress>
                         <b-alert show class="col" :variant="getVariant()"> limit znaków to {{service.char_restriction}} </b-alert>
-    <button class="btn btn-primary" type="submit" @click.prevent="getFormValues(message, service.id, service.char_restriction)">
+    <button style="background-color: rgb(90, 128, 204);" class="btn btn-primary" type="submit" @click.prevent="getFormValues(message, service.id, service.char_restriction)">
      Zapisz </button>
 
 </b-form-group>

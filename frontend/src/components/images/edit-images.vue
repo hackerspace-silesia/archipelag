@@ -1,6 +1,5 @@
 <template>
-  <section class="container">
-    <h2>Edytuj dodane obrazki</h2>
+  <section class="container edit-images-panel">
     <h4>Kliknij na obrazek by usunać</h4>
           <b-alert  :show="isError" variant="danger">{{error}}</b-alert>
         <b-alert  :show="isSuccess" variant="success">{{success}}</b-alert>
@@ -81,3 +80,12 @@
   }
 
 </script>
+<style>
+    .container{
+    font-family: "Century Gothic", CenturyGothic, AppleGothic, sans-serif;
+
+  }
+  .edit-images-panel{
+       margin-top: 1px !important;
+  }
+</style>

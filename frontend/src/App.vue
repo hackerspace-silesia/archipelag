@@ -26,11 +26,15 @@ methods:{
 
 <style>
 #app {
-  font-family: 'Avenir', Helvetica, Arial, sans-serif;
+
+  font-family: 'Segoe UI', Helvetica, Arial, sans-serif !important;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
   color: #2c3e50;
-  margin-top: 0px;
+  margin-top: 40px;
+}
+    h2,h3,h4{
+  font-family: "Century Gothic", CenturyGothic, AppleGothic, sans-serif;
 }
 </style>

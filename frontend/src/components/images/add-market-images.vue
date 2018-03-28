@@ -125,3 +125,9 @@ import 'vue2-dropzone/dist/vue2Dropzone.css';
   }
 
 </script>
+<style>
+  .container{
+    font-family: "Century Gothic", CenturyGothic, AppleGothic, sans-serif;
+    margin-top: 90px;
+  }
+</style>

@@ -21,7 +21,7 @@
     </b-alert>
     <b-card no-body class="mb-1" v-for="service in types">
       <b-card-header header-tag="header" class="p-1" role="tab">
-        <b-btn block v-b-toggle="service.service" v-on:click="closeInformations" v-b-toggle.service.service variant="info" size="lg">{{service.service}}</b-btn>
+        <b-btn style="background-color: rgb(90, 128, 204);"  block v-b-toggle="service.service" v-on:click="closeInformations" v-b-toggle.service.service variant="info" size="lg">{{service.service}}</b-btn>
       </b-card-header>
       <b-collapse v-bind:id="service.service" accordion="my-accordion" role="tabpanel">
           <text-area-counter v-bind:service="service" v-bind:getFormValues="getFormValues"></text-area-counter>
@@ -117,5 +117,7 @@
 }
 </script>
 <style>
-
+h2,h4{
+  font-family: "Century Gothic", CenturyGothic, AppleGothic, sans-serif;
+}
 </style>

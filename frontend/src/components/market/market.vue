@@ -1,9 +1,9 @@
 <template>
 
   <div class="market">
-     <hr>
-    <h1>Witaj na targu</h1>
-    <hr>
+    <header >
+      <img class="img-fluid d-block mx-auto"  src="static/archipelag.jpg" alt="">
+    </header>
   <b-container fluid>
     <!-- User Interface controls -->
     <b-row>
@@ -43,28 +43,22 @@
              @filtered="onFiltered"
     >
     <template slot="description" scope="row">
-     <b-button size="lg"
-              v-if="isDescription(row.item.description)"
-               variant="success"  v-b-modal="row.index.toString()">
-               Zobacz szczegóły
-     </b-button>
-     <div v-else>
-       Brak szczegółów
-     </div>
+
         <b-modal v-bind:id="row.index.toString()" ok-only>
               {{row.item.description}}
         </b-modal>
    </template>
        <template slot="id" scope="row">
-        <b-button size="lg"  v-on:click="goToEditPage(row.item.id)"
+        <b-button style="background-color: rgb(96, 130, 65); font-size:1rem"
+                  size="lg"  v-on:click="goToEditPage(row.item.id)"
                   variant="success"
                   v-if="isOwner(row.item.owner)">
                    Edytuj
         </b-button>
-        <b-button size="lg" @click.stop="row.toggleDetails"
+        <b-button style="background-color: rgb(96, 130, 65); font-size:1rem"
+                  size="lg" @click.stop="row.toggleDetails"
                   variant="success"
-                  isOwner
-                  v-else="get_market_messages(row.item.id).length > 0">
+                  v-else-if="get_market_messages(row.item.id).length != 0">
                    {{ row.detailsShowing ? 'Schowaj' : 'Udostępnij' }}
         </b-button>
          <div v-else>
@@ -72,20 +66,21 @@
       </div>
       </template>
       <template slot="row-details" scope="row">
-        <b-card ref="buttons_view">
-            <b-button v-for="message in get_market_messages(row.item.id)"
-                      variant="primary" size=""
+        <b-card ref="buttons_view" style="background-color: rgb(230, 206, 133); font-size:1rem">
+            <b-button style="background-color: rgb(90, 128, 204)"
+                      v-for="message in get_market_messages(row.item.id)"
+                      size=""
                       @click.stop="openInfoModal(message, row.item, $event.target)"
                       class="mr-1">
               {{ message.type }}
             </b-button>
-            <b-button variant="warning" size="" @click.stop="showLogs(row.item.id)" class="mr-1">
+            <b-button style="background-color: rgb(185, 206, 247); font-size:1rem"
+                      size="" @click.stop="showLogs(row.item.id)" class="mr-1">
               Zobacz kto już udostępnił
             </b-button>
            </b-card>
 
-           <b-modal id="modalInfo"  @ok="handleSharedMessage" @hide="resetModal" :title="modalInfo.title" ok-title="Nalicz punkty za udostępnienie" cancel-title="Anuluj">
-
+           <b-modal id="modalInfo" @ok="handleSharedMessage" @hide="resetModal" :title="modalInfo.title" ok-title="Nalicz punkty za udostępnienie" cancel-title="Anuluj">
                      <b-form-textarea id="textarea1"
                             :value="modalInfo.content"
                             :rows="5">
@@ -123,10 +118,10 @@ export default {
     return {
       items: items,
       fields: [
-        { key: 'owner', label: 'Organizacja', sortable: true, 'class': 'text-center' },
+        { key: 'owner', label: 'autor', sortable: true, 'class': 'text-center' },
         { key: 'title', label: 'tytuł' , sortable: true,},
-        { key: 'date_starting', label: "Rozpoczęcie" , sortable: true, formatter: 'getHumanDate'},
-        { key: 'date_ending', label: 'Zakończenie', sortable: true, formatter: 'getHumanDate'},
+        { key: 'date_starting', label: "start" , sortable: true, formatter: 'getHumanDate'},
+        { key: 'date_ending', label: 'koniec', sortable: true, formatter: 'getHumanDate'},
         { key: 'date_modified', label: 'Data modyfikacji', sortable: true, formatter: 'getHumanDate'},
         { key: 'hashtag', label: 'hashtag', sortable: true, },
         { key: "id", label:"Akcje" }
@@ -291,8 +286,15 @@ export default {
 </script>
 
 <style>
+.market{
+    background-color: rgb(117, 184, 191);
+}
+
 .description{
     left: 0px;
 }
+  .share-button{
+    background-color: rgb(96, 130, 65);
+  }
 </style>
 <!-- table-complete-1.vue -->
