@@ -35,7 +35,7 @@ def add_coins_for_share(current_ngo , message_id):
         return dict(error="Zachłanność jest niedozwolona. Nie możesz udostępniać swojego wydarzenia.")
     elif ShareLog.objects.filter(message=shared_message, owner=current_ngo).first():
         return dict(error="Wiadomość juz udostępniono wcześniej.")
-    elif get_number_of_all_messages_for_market_where_is_current_shared(shared_message) > 3:
+    elif get_number_of_all_messages_for_market_where_is_current_shared(shared_message, current_ngo) > 3:
         coins = POINTS_RULES['share_more_than_three_messages_format']
     else:
         coins = POINTS_RULES['for_share']
@@ -44,11 +44,11 @@ def add_coins_for_share(current_ngo , message_id):
     return dict(success="Dziękujemy za udostępnienie. Naliczone punkty: {}".format(coins))
 
 
-def get_number_of_all_messages_for_market_where_is_current_shared(shared_message):
-    current_market_messages = Message.objects.filter(market=shared_message.market).all()
+def get_number_of_all_messages_for_market_where_is_current_shared(shared_message, current_ngo):
+    current_market_messages = Message.objects.filter(market=shared_message.market, ).all()
     logs = []
     for message in current_market_messages:
-        logs.append(ShareLog.objects.filter(message=message.id))
+        logs.append(ShareLog.objects.filter(message=message.id, owner=current_ngo))
     return len(list(chain(*logs)))
 
 
