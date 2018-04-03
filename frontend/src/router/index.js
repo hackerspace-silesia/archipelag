@@ -99,10 +99,13 @@ router.beforeEach((to, from, next) => {
     axios.post(process.env.BACKEND+"ngo/token-verify/", {token:localStorage.getItem('jwtToken')})
     .then(response =>{
       const user_data = response.data.user;
+      localStorage.setItem('ngo_name',  user_data.organisation);
       localStorage.setItem('coins', user_data.coins);
 
       next()
     }).catch(e => {
+      localStorage.removeItem('jwtToken');
+      this.$eventHub.$emit('logged-in');
       next({
          path: '/login',
        });})

@@ -3,12 +3,12 @@
   <b-navbar class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top" toggleable="md" type="dark" variant="info">
 
     <b-navbar-toggle target="nav_collapse"></b-navbar-toggle>
-    <router-link to="/">
+    <router-link to="/" v-if="isLogged" >
             <b-navbar-brand >{{name}} masz {{coins}} punktów</b-navbar-brand>
     </router-link>
     <b-collapse is-nav id="nav_collapse">
       <!-- Right aligned nav items -->
-      <b-navbar-nav class="ml-auto">
+      <b-navbar-nav class="ml-auto" v-if="isLogged" >
         <router-link to="/market">
           <li class="nav-item">
             <a class="nav-link">Baza</a>
@@ -24,7 +24,13 @@
               <a class="nav-link">Wyloguj</a>
           </li></div>
       </b-navbar-nav>
-
+           <b-navbar-nav class="ml-auto" v-else>
+        <router-link to="/login">
+          <li class="nav-item">
+            <a class="nav-link">Logowanie</a>
+          </li>
+        </router-link>
+           </b-navbar-nav>
     </b-collapse>
   </b-navbar>
 </div>
@@ -33,8 +39,9 @@
 <script>
   import axios from 'axios';
 export default {
-created(){
 
+created(){
+  this.$eventHub.$on('logged-in', this.checkIfIsLogged);
   this.getNgoName();
   this.getCoins();
 },
@@ -42,6 +49,7 @@ data() {
   return {
     coins:0,
     name:'',
+    isLogged: false,
 }
 },
 watch:{
@@ -52,16 +60,26 @@ watch:{
 components: {
 
 },
+
 methods:{
   logout: function() {
-    localStorage.setItem('jwtToken', '');
-    this.$router.push('/login');
+
+    localStorage.removeItem('jwtToken');
+    this.$router.push('/')
+    this.checkIfIsLogged();
  },
  getNgoName: function(){
    this.name = localStorage.getItem('ngo_name');
  },
  getCoins: function(){
-   this.coins = localStorage.getItem('coins');
+   this.coins = localStorage.getItem('coins') | 0;
+ },
+  checkIfIsLogged: function(){
+   if (localStorage.getItem('jwtToken') != null){
+       this.isLogged = true;
+   }else{
+       this.isLogged = false;
+   }
  },
 
 }}

@@ -70,10 +70,13 @@
           this.isLoading=true;
           axios.post(process.env.BACKEND+"ngo/login/",this.form)
          .then(response =>{
+
            this.isLoading=false;
             localStorage.setItem('jwtToken', response.data.token);
             console.log(response.data.user.organisation)
             localStorage.setItem('ngo_name',  response.data.user.organisation);
+            localStorage.setItem('coins',  response.data.user.coins);
+            this.$eventHub.$emit('logged-in');
             this.$router.push('/');
          }).
            catch(e => {
@@ -91,10 +94,7 @@
         }
 
       },
-      setCookie(name, value, days = 7, path = '/') {
-       const expires = new Date(Date.now() + days * 864e5).toUTCString()
-       document.cookie = name + '=' + encodeURIComponent(value) + '; expires=' + expires + '; path=' + path
-     },
+
       areFieldsCorrect(){
         if (this.form.login == 0) {
           this.showDismissibleAlert=true

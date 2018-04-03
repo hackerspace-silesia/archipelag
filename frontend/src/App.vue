@@ -1,8 +1,7 @@
 <template>
   <div id="app">
     <topnavbar v-show="$route.path==='/login' | $route.path==='/signUp' ? false : true"/>
-    {{ready()}}
-    <router-view/>
+    <router-view />
   </div>
 </template>
 
@@ -15,10 +14,15 @@ export default {
     topnavbar,
 
   },
+ data() {
+      return {
+          renderSwitch:false,
+      }
+ },
 
 methods:{
-  ready : function (){
-       console.log(this.$route.path);
+  renderSwitchSet : function (){
+       this.renderSwitch = true;
    }
 }
 }
