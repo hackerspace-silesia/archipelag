@@ -47,7 +47,7 @@
 <script type="text/javascript">
 
   import axios from 'axios';
-
+ import EventBus from '../event-bus';
   export default {
     data() {
       return{
@@ -73,10 +73,9 @@
 
            this.isLoading=false;
             localStorage.setItem('jwtToken', response.data.token);
-            console.log(response.data.user.organisation)
             localStorage.setItem('ngo_name',  response.data.user.organisation);
             localStorage.setItem('coins',  response.data.user.coins);
-            this.$eventHub.$emit('logged-in');
+             EventBus.$emit('logged', 'in');
             this.$router.push('/');
          }).
            catch(e => {
@@ -92,7 +91,6 @@
 
          })
         }
-
       },
 
       areFieldsCorrect(){

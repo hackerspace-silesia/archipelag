@@ -16,6 +16,7 @@ import SignUp from '@/components/signUp/signUp'
 import NotFound from '@/components/notFound'
 import hexagon from '@/components/hexagon-spinner.vue'
 import axios from 'axios';
+import EventBus from '../event-bus';
 
 Vue.use(Router)
 Vue.component('loader',hexagon)
@@ -101,17 +102,19 @@ router.beforeEach((to, from, next) => {
       const user_data = response.data.user;
       localStorage.setItem('ngo_name',  user_data.organisation);
       localStorage.setItem('coins', user_data.coins);
-
+      EventBus.$emit('logged', 'in');
       next()
     }).catch(e => {
+      EventBus.$emit('logged', 'in');
+      console.log(e)
       localStorage.removeItem('jwtToken');
-      this.$eventHub.$emit('logged-in');
       next({
          path: '/login',
        });})
   } else {
     next();
   }
+
 })
 
 export default router

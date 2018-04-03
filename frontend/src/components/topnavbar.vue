@@ -37,24 +37,32 @@
 </template>
 
 <script>
-  import axios from 'axios';
+  import EventBus from '../event-bus';
 export default {
 
 created(){
-  this.$eventHub.$on('logged-in', this.checkIfIsLogged);
+        EventBus.$on('logged', this.checkIfIsLogged );
+
   this.getNgoName();
   this.getCoins();
 },
+  beforeDestroy(){
+     EventBus.$off('logged');
+  },
+  mounted(){
+         this.isLogged = this.checkIfIsLogged();
+  },
 data() {
   return {
     coins:0,
     name:'',
-    isLogged: false,
+    isLogged: this.checkIfIsLogged(),
 }
 },
 watch:{
     '$route' (to, from){
         this.getCoins();
+        this.getNgoName();
     }
 },
 components: {
@@ -63,10 +71,9 @@ components: {
 
 methods:{
   logout: function() {
-
     localStorage.removeItem('jwtToken');
-    this.$router.push('/')
-    this.checkIfIsLogged();
+    this.isLogged = false;
+     this.$router.push('/');
  },
  getNgoName: function(){
    this.name = localStorage.getItem('ngo_name');
@@ -74,11 +81,13 @@ methods:{
  getCoins: function(){
    this.coins = localStorage.getItem('coins') | 0;
  },
+
   checkIfIsLogged: function(){
-   if (localStorage.getItem('jwtToken') != null){
-       this.isLogged = true;
+   if (localStorage.getItem('jwtToken') == null){
+     this.isLogged = false;
    }else{
-       this.isLogged = false;
+       this.isLogged = true;
+
    }
  },
 

@@ -158,7 +158,9 @@ export default {
   },
   methods: {
       isOwner(market_owner_name){
+          console.log(market_owner_name)
           name = localStorage.getItem('ngo_name');
+          console.log(name)
           return name == market_owner_name;
       },
     openInfoModal (message, row, button) {

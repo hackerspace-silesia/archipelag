@@ -15,15 +15,10 @@ export default {
 
   },
  data() {
-      return {
-          renderSwitch:false,
-      }
+      return {}
  },
 
 methods:{
-  renderSwitchSet : function (){
-       this.renderSwitch = true;
-   }
 }
 }
 </script>
