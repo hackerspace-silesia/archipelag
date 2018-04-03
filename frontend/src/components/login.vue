@@ -4,8 +4,8 @@
     </div>
   <div class="col-md-8 mx-auto text-center" >
 
-    <form @submit.prevent="submitForm">
-      <b-card bg-variant="light">
+    <form  @submit.prevent="submitForm">
+      <b-card bg-variant="light" class="bg-dark" style="color:white">
         <b-alert variant="danger"
        dismissible
        :show="showDismissibleAlert"

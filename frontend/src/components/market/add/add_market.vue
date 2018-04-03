@@ -11,7 +11,7 @@
       </div>
       <div class="col-md-6 center" >
 
-    <b-card class="bg-dark" bg-variant="light">
+    <b-card  bg-variant="light">
         <h2>Dodaj wydarzenie</h2>
         <h3>1/3</h3>
         <h4>Dodaj podstawowe informacje</h4>
@@ -197,9 +197,7 @@
 
 </script>
 <style>
-  .card-body{
-    color:white;
-  }
+
   h2,h3,h4{
   font-family: "Century Gothic", CenturyGothic, AppleGothic, sans-serif;
 }

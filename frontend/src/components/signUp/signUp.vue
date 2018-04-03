@@ -2,8 +2,8 @@
 <div id="signUp">
 
   <div class="col-md-8 mx-auto text-center" v-if="duringCreating">
-    <form @submit.prevent="submitForm" @keyup.enter="submitForm">
-      <b-card bg-variant="light">
+    <form class="bg-dark" style="color:white" @submit.prevent="submitForm" @keyup.enter="submitForm">
+      <b-card bg-variant="dark">
         <b-alert variant="danger"
        dismissible
        :show="showDismissibleAlert"

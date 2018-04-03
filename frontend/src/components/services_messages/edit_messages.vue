@@ -3,6 +3,10 @@
     <hr>
     <h2>Edytuj wiadomości</h2>
     <hr>
+        <h5>Rozwijając każdą opcję, zobaczysz wskazówki odnośnie formy udostępnianej treści.
+Polecamy trzymać się tych zasad – lepiej skonstruowane komunikaty są bardziej popularne.
+Jeśli masz więcej wątpliwości, sięgnij do naszego poradnika,
+który znajduje się na stronie głównej #archipelagu.</h5>
     <b-alert variant="success"
        dismissible
        :show="showDismissibleSuccess"

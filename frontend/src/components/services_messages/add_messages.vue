@@ -4,6 +4,10 @@
     <h2>Dodaj wydarzenie</h2>
         <h3>3/3</h3>
     <h4>Wybierz serwis na który ma być udostępniona wiadomość</h4>
+    <h5>Rozwijając każdą opcję, zobaczysz wskazówki odnośnie formy udostępnianej treści.
+Polecamy trzymać się tych zasad – lepiej skonstruowane komunikaty są bardziej popularne.
+Jeśli masz więcej wątpliwości, sięgnij do naszego poradnika,
+który znajduje się na stronie głównej #archipelagu.</h5>
     <hr>
     <b-alert variant="success"
        dismissible
