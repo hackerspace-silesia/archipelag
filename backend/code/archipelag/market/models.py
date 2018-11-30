@@ -7,6 +7,7 @@ from django.db.models import ForeignKey
 from django.db.models import Model
 from django.db.models import ImageField
 from django.db.models import UUIDField
+from django.db.models import CASCADE
 from django.utils.safestring import mark_safe
 from django.conf import settings
 
@@ -15,7 +16,7 @@ from archipelag.ngo.models import NgoUser
 
 class Market(Model):
     id = UUIDField(primary_key=True, default=uuid4, editable=False, unique=True)
-    owner = ForeignKey(NgoUser)
+    owner = ForeignKey(NgoUser, on_delete=CASCADE)
     title = CharField(max_length=120, blank=True, null=False)
     date_starting = DateTimeField(null=True, blank=True)
     date_ending = DateTimeField(null=True, blank=True)
@@ -28,7 +29,7 @@ class Market(Model):
 
 
 class Image(Model):
-    market = ForeignKey(Market, null=False)
+    market = ForeignKey(Market, null=False, on_delete=CASCADE)
     image_path = ImageField(upload_to="media/", null=True, blank=True)
 
     def url(self):

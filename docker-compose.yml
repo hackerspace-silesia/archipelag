@@ -14,11 +14,12 @@ services:
     env_file:
       - .env
     environment:
-        - DJANGO_DEBUG=1
-    links: [postgres]
+      - DJANGO_DEBUG=1
+    links:
+      - postgres
 
   postgres:
-    image: postgres:9.4
+    image: postgres:11.1
     restart: always
     volumes:
       - postgres-data:/var/lib/postgresql/data
@@ -29,7 +30,7 @@ services:
       - PGPASSWORD=archipelag
 
   rabbitmq:
-    image: rabbitmq:3-management
+    image: rabbitmq:3.7.8-management
     env_file: .env
 
   maildump:

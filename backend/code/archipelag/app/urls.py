@@ -28,10 +28,10 @@ urlpatterns = [
 
 
 router = DefaultRouter()
-router.register(r'api/message', MessagesList, base_name='messages_list')
-router.register(r'api/messages_types', MessagesTypesList, base_name='messages_types_list')
-router.register(r'api/ngo', NgoUserList, base_name='all_ngos')
-router.register(r'api/images', UploadedImagesViewSet, base_name='images')
+router.register(r'api/message', MessagesList, basename='messages_list')
+router.register(r'api/messages_types', MessagesTypesList, basename='messages_types_list')
+router.register(r'api/ngo', NgoUserList, basename='all_ngos')
+router.register(r'api/images', UploadedImagesViewSet, basename='images')
 urlpatterns.extend(router.urls)
 urlpatterns.extend(static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT))
 # if not settings.DEBUG:

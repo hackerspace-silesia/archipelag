@@ -35,7 +35,7 @@ class TestImage(BaseTestCase):
                 follow_redirects=True,
                 data=data,
                 format='multipart')
-        assert response.json()["error"] == dict(market_id=['"121212" nie jest poprawnym UUID.'])
+        assert response.json()["error"] == dict(market_id=['Must be a valid UUID.'])
         assert response.status_code == 400
 
     def test_create_image_when_when_missing_file(self, auth_client):

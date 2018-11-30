@@ -4,6 +4,7 @@ from django.db.models import TextField
 from django.db.models import CharField
 from django.db.models import BooleanField
 from django.db.models import PositiveIntegerField
+from django.db.models import CASCADE
 
 from archipelag.market.models import Market
 
@@ -28,8 +29,8 @@ class MessageType(models.Model):
 class Message(models.Model):
     content = TextField(max_length=2048, blank=True)
     shared = PositiveIntegerField(default=0)
-    type = ForeignKey(MessageType, null=False)
-    market = ForeignKey(Market, null=False)
+    type = ForeignKey(MessageType, null=False, on_delete=CASCADE)
+    market = ForeignKey(Market, null=False, on_delete=CASCADE)
 
     def __str__(self):
         return str(self.content)[0:25]

@@ -3,6 +3,7 @@ from django.db.models import DateTimeField
 from django.db.models import ForeignKey
 from django.db.models import Model
 from django.db.models import PositiveIntegerField
+from django.db.models import CASCADE
 
 from archipelag.ngo.models import NgoUser
 from archipelag.message.models import Message
@@ -20,7 +21,7 @@ EVENT_TYPES = (
 
 
 class EventLog(Model):
-    owner = ForeignKey(NgoUser, null=False, blank=False)
+    owner = ForeignKey(NgoUser, null=False, blank=False, on_delete=CASCADE)
     type = CharField(max_length=2, choices=EVENT_TYPES, default=SHARE, null=False, blank=False)
     date_created = DateTimeField(auto_now_add=True)
     id_connected_object = PositiveIntegerField(null=False,)
